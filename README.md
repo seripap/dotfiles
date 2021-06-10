@@ -21,3 +21,8 @@ $ git clone https://github.com/seripap/dotfiles
 $ ln -s ~/dotfiles/.vimrc ~/.vimrc
 $ ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ```
+
+### Notes
+
+- <C-wsad> are mapped to hjkl, because small keyboards
+- <C-hjkl> are mapped to <C-w> <C-w> hjkl
