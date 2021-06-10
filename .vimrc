@@ -27,7 +27,7 @@ set rtp+=/usr/local/bin/fzf
 nmap ,n :NERDTreeFind<CR>
 nmap <C-f> :NerdTreeToggle<CR>
 nmap <C-p> :Files %:p:h<CR>
-
+nmap <F8> :TagbarToggle<CR>
 
 "autocmd VimEnter * NERDTree
 
@@ -90,9 +90,12 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'prettier/vim-prettier', {'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'scss', 'json', 'graphql', 'markdown', 'yaml', 'html'] }
 Plug 'tpope/vim-fugitive'
+Plug 'scrooloose/syntastic'
+Plug 'majutsushi/tagbar'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
+let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
 
 " coc.nvim default settings
 " -------------------------------------------------------------------------------------------------

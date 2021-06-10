@@ -8,6 +8,7 @@
 - [silver searcher](https://github.com/ggreer/the_silver_searcher) for Ag
 - [rg](https://github.com/BurntSushi/ripgrep)
 - diff-so-fancy (brew install diff-so-fancy)
+- brew install ctags-exuberant
 
 ## How to
 
