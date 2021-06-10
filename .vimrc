@@ -89,6 +89,7 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'prettier/vim-prettier', {'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'scss', 'json', 'graphql', 'markdown', 'yaml', 'html'] }
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
