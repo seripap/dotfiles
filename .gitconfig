@@ -1,7 +1,22 @@
-# set your user tokens as enivornment variables, such as ~/.secrets
-# See the README for examples.
+[user]
+  name = Daniel Seripap
+  email = daniel@seripap.com
+[alias]
+  co = checkout
+  s = status -sb
+  ps = push
+  p = pull
+  a = add
+  aa = "add --all"
+  b = branch
+  f = fetch
+  rb = rebase
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+  dsf = "!f() { [ -z \"$GIT_PREFIX\" ] || cd \"$GIT_PREFIX\" && git diff --color \"$@\" | diff-so-fancy  | less --tabs=4 -RFX; }; f"
 [color]
-  ui = true
+  branch = auto
+  diff = auto
+  status = auto
 [color "branch"]
   current = yellow reverse
   local = yellow
@@ -11,128 +26,33 @@
   frag = magenta bold
   old = red bold
   new = green bold
-[alias]
-  # add
-  a = add                           # add
-  chunkyadd = add --patch           # stage commits chunk by chunk
-
-  # branch
-  b = branch -v                     # branch (verbose)
-
-  # commit
-  c = commit -m                     # commit with message
-  ca = commit -am                   # commit all with message
-  ci = commit                       # commit
-  amend = commit --amend            # ammend your last commit
-  ammend = commit --amend           # ammend your last commit
-
-  # checkout
-  co = checkout                     # checkout
-  nb = checkout -b                  # create and switch to a new branch (mnemonic: "git new branch branchname...")
-
-  # cherry-pick
-  cp = cherry-pick -x               # grab a change from a branch
-
-  # diff
-  d = diff                          # diff unstaged changes
-  dc = diff --cached                # diff staged changes
-  last = diff HEAD^                 # diff last committed change
-
-  # log
-  l = log --graph --date=short
-	changes = diff-tree --no-commit-id --name-only -r
-  short = log --pretty=format:\"%h %cr %cn %Cgreen%s%Creset\"
-  changelog = log --pretty=format:\" * %s\"
-  shortnocolor = log --pretty=format:\"%h %cr %cn %s\"
-
-  # pull
-  pl = pull                         # pull
-
-  # push
-  ps = push                         # push
-
-  # rebase
-  rc = rebase --continue            # continue rebase
-  rs = rebase --skip                # skip rebase
-
-  # remote
-  r = remote -v                     # show remotes (verbose)
-
-  # reset
-  unstage = reset HEAD              # remove files from index (tracking)
-  uncommit = reset --soft HEAD^     # go back before last commit, with files in uncommitted state
-  filelog = log -u                  # show changes to a file
-  mt = mergetool                    # fire up the merge tool
-
-  # stash
-  ss = stash                        # stash changes
-  sl = stash list                   # list stashes
-  sa = stash apply                  # apply stash (restore changes)
-  sd = stash drop                   # drop stashes (destory changes)
-
-  # status
-  s = status                        # status
-  st = status                       # status
-  stat = status                     # status
-
-  # tag
-  t = tag -n                        # show tags with <n> lines of each tag message
-
-  # svn helpers
-  svnr = svn rebase
-  svnd = svn dcommit
-  svnl = svn log --oneline --show-commit
-	ignore = update-index --assume-unchanged
-	unignore = update-index --no-assume-unchanged
-	ll = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-	ld = log --pretty=format:\"%C(yellow)%h\\\\ %ad%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --date=relative
-	lll = log --pretty=oneline --graph --decorate --all
-[format]
-  pretty = format:%C(blue)%ad%Creset %C(yellow)%h%C(green)%d%Creset %C(blue)%s %C(magenta) [%an]%Creset
-[mergetool]
-  prompt = false
-[mergetool "mvimdiff"]
-  cmd="mvim -c 'Gdiff' $MERGED"     # use fugitive.vim for 3-way merge
-  keepbackup=false
-[merge]
-  summary = true
-  verbosity = 1
-	tool = sublime
-[apply]
-  whitespace = nowarn
-[branch]
-  autosetupmerge = true
-[push]
-  # 'git push' will push the current branch to its tracking branch
-  # the usual default is to push all branches
-  default = tracking
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[credential]
+    helper = osxkeychain
 [core]
-  autocrlf = false
+  pager = diff-so-fancy | less --tabs=4 -RFX
+  excludesfile = /Users/dseripap/.gitignore
   editor = vim
-	excludesfile = /Users/dseripap/.yadr/git/gitignore
-[advice]
-  statusHints = false
-[diff]
-  # Git diff will use (i)ndex, (w)ork tree, (c)ommit and (o)bject
-  # instead of a/b/c/d as prefixes for patches
-  mnemonicprefix = true
-[rerere]
-  # Remember my merges
-  # http://gitfu.wordpress.com/2008/04/20/git-rerere-rereremember-what-you-did-last-time/
-  enabled = true
-[include]
-  path = .gitconfig.user
-[user]
-	name = Daniel Seripap
-	email = daniel.seripap@weather.com
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path =
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-[mergetool "sublime"]
-	cmd = subl -w $MERGED
-	trustExitCode = false
 [url "https://"]
-	insteadOf = git://
+  insteadOf = git://
+[merge]
+  tool = smerge
+[github]
+  user = seripap
+[gpg]
+  program = gpg
+[ghi]
+  token = !security find-internet-password -a seripap -s github.com -l 'ghi token' -w
+[mergetool]
+  keepBackup = false
+[mergetool "smerge"]
+  cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+    trustExitCode = true
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
