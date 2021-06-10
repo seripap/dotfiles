@@ -24,5 +24,5 @@ $ ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 
 ### Notes
 
-- <C-wsad> are mapped to hjkl, because small keyboards
-- <C-hjkl> are mapped to <C-w> <C-w> hjkl
+- `<C-wsad>` are mapped to `hjkl`, because small keyboards
+- `<C-hjkl>` are mapped to `<C-w> <C-w> hjkl`
