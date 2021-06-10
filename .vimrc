@@ -25,7 +25,6 @@ set pastetoggle=<leader>z
 set rtp+=/usr/local/bin/fzf
 
 nmap ,n :NERDTreeFind<CR>
-nmap <C-f> :NerdTreeToggle<CR>
 nmap <C-p> :Files %:p:h<CR>
 nmap <F8> :TagbarToggle<CR>
 
