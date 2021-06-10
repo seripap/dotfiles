@@ -23,6 +23,14 @@ $ ln -s ~/dotfiles/.vimrc ~/.vimrc
 $ ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ```
 
+### .zshrc
+```
+if type rg &> /dev/null; then
+   export FZF_DEFAULT_COMMAND='rg --files --hidden'
+   export FZF_DEFAULT_OPTS='-m --height 50% --border'
+fi
+```
+
 ### Notes
 
 - `<C-wsad>` are mapped to `hjkl`, because small keyboards
