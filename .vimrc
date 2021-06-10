@@ -8,7 +8,6 @@ filetype plugin indent on
 set encoding=UTF-8
 set autoindent
 set autowrite
-set ts=4
 set noswapfile
 set hlsearch
 set incsearch
@@ -16,6 +15,8 @@ set ignorecase
 
 set nu
 set tw=500
+set tabstop=4
+set shiftwidth=4
 set wrap
 
 set mouse=a
