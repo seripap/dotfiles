@@ -12,6 +12,7 @@ set noswapfile
 set hlsearch
 set incsearch
 set ignorecase
+set re=0
 
 set nu
 set tw=500
@@ -27,6 +28,8 @@ set rtp+=/usr/local/bin/fzf
 nmap ,n :NERDTreeFind<CR>
 nmap <C-p> :Files %:p:h<CR>
 nmap <F8> :TagbarToggle<CR>
+nnoremap <Leader>b :ls<CR>:b<Space>
+inoremap jj <ESC>
 
 "autocmd VimEnter * NERDTree
 
@@ -96,6 +99,10 @@ call plug#end()
 let g:ackprg = 'ag --nogroup --nocolor --column'
 let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
 
+" coc-tsserver
+let g:coc_global_extensions = [ 'coc-tsserver' ]
+
+
 " coc.nvim default settings
 " -------------------------------------------------------------------------------------------------
 
@@ -137,7 +144,20 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use U to show documentation in preview window
-nnoremap <silent> U :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
