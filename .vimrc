@@ -31,6 +31,12 @@ nmap <F8> :TagbarToggle<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 inoremap jj <ESC>
 
+" copypasta
+noremap <Leader>y "*y
+noremap <Leader>p "*p
+noremap <Leader>Y "+y
+noremap <Leader>P "+p
+
 "autocmd VimEnter * NERDTree
 
 " Golang settings
