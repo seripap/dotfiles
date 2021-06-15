@@ -5,6 +5,10 @@ let mapleader = ','
 
 filetype plugin indent on
 
+" Disable Ex mode
+map q: <Nop>
+nnoremap Q <nop>
+
 set encoding=UTF-8
 set autoindent
 set autowrite
@@ -20,7 +24,8 @@ set tabstop=4
 set shiftwidth=4
 set wrap
 
-set mouse=a
+set mouse=
+set ttymouse=
 set pastetoggle=<leader>z
 
 set rtp+=/usr/local/bin/fzf
@@ -66,9 +71,12 @@ let g:go_highlight_variable_assignments = 1
 let g:go_fmt_experimental = 1
 let g:go_metalinter_autosave=1
 let g:go_metalinter_autosave_enabled=['golint', 'govet']
-autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+"autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
 autocmd FileType go nmap <leader>t  <Plug>(go-test)
+autocmd FileType go noremap <F5> :GoDebugStart
+autocmd FileType go noremap <Leader>b :GoDebugBreakpoint<CR>
+autocmd FileType go noremap <Leader>n :GoDebugContinue<CR>
 
 noremap <leader>d :NERDTreeToggle<CR>
 noremap <leader>f :NerdTreeFind<CR>
