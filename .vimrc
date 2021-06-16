@@ -1,6 +1,8 @@
 packloadall
 syntax on
 
+hi Search ctermfg=Red cterm=bold
+
 let mapleader = ','
 
 filetype plugin indent on
@@ -236,3 +238,8 @@ map <C-a> h
 map <C-s> j
 map <C-w> k
 map <C-d> l
+
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <C-Right> :tabnext<CR>
+nnoremap <C-j> :tabprevious<CR>
+nnoremap <C-k> :tabnext<CR>
