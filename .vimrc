@@ -47,6 +47,7 @@ noremap <Leader>P "+p
 "autocmd VimEnter * NERDTree
 
 " Golang settings
+let g:go_addtags_transform = "camelcase"
 let g:go_highlight_operators = 1
 let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
@@ -72,7 +73,7 @@ let g:go_highlight_variable_declarations = 1
 let g:go_highlight_variable_assignments = 1
 let g:go_fmt_experimental = 1
 let g:go_metalinter_autosave=1
-let g:go_metalinter_autosave_enabled=['golint', 'govet']
+let g:go_metalinter_autosave_enabled=['golint', 'govet', 'errcheck']
 "autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
 autocmd FileType go nmap <leader>t  <Plug>(go-test)
@@ -82,6 +83,9 @@ autocmd FileType go noremap <Leader>n :GoDebugContinue<CR>
 
 noremap <leader>d :NERDTreeToggle<CR>
 noremap <leader>f :NerdTreeFind<CR>
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <leader>a :cclose<CR>
 
 " Vim Plugins
 call plug#begin('~/.vim/plugged')
@@ -111,6 +115,8 @@ Plug 'prettier/vim-prettier', {'do': 'yarn install', 'for': ['javascript', 'type
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'SirVer/ultisnips'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
