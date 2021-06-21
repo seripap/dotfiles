@@ -13,11 +13,14 @@ nnoremap Q <nop>
 
 set encoding=UTF-8
 set autoindent
+set smartindent
 set autowrite
 set noswapfile
 set hlsearch
 set incsearch
 set ignorecase
+set showmatch
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/node_modules/*,*/vendor/*
 set re=0
 
 set nu
@@ -241,8 +244,8 @@ let g:airline_symbols.colnr = "Col "
 
 " Shortcut for view jumping
 map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
+"map <C-j> <C-w>j
+"map <C-k> <C-w>k
 map <C-l> <C-w>l
 
 " Map ctrl+wsad to arrows for 60% keyboard
