@@ -116,7 +116,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'SirVer/ultisnips'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
