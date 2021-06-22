@@ -126,6 +126,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'jparise/vim-graphql'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -224,7 +225,7 @@ colorscheme xcodedarkhc
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 0
 
-let g:airline_theme='luna'
+let g:airline_theme='base16'
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
