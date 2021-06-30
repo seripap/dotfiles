@@ -1,4 +1,5 @@
 packloadall
+
 syntax on
 
 hi Search ctermfg=Red cterm=bold
@@ -52,7 +53,8 @@ set cursorline
 hi cursorline cterm=none term=none
 autocmd WinEnter * setlocal cursorline
 autocmd WinLeave * setlocal nocursorline
-highlight CursorLine guibg=#303000 ctermbg=234
+highlight CursorLine guibg=#e4e4e4 ctermbg=254
+
 
 "autocmd VimEnter * NERDTree
 
@@ -115,13 +117,14 @@ Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
-Plug 'arzg/vim-colors-xcode'
+Plug 'sainnhe/sonokai'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'xuyuanp/nerdtree-git-plugin'
+Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'prettier/vim-prettier', {'do': 'yarn install', 'for': ['javascript', 'typescript', 'css', 'scss', 'json', 'graphql', 'markdown', 'yaml', 'html'] }
+Plug 'prettier/vim-prettier', {'do': 'yarn install'}
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
@@ -135,6 +138,9 @@ let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
 " coc-tsserver
 let g:coc_global_extensions = [ 'coc-tsserver' ]
 
+" Prettier
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+nmap <Leader>py <Plug>(Prettier)
 
 " coc.nvim default settings
 " -------------------------------------------------------------------------------------------------
@@ -153,14 +159,14 @@ set signcolumn=yes
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+let col = col('.') - 1
+return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use <c-space> to trigger completion.
@@ -176,17 +182,22 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
+" buffer switch
+map <Leader>b :bn<cr>
+map <Leader>B :bp<cr>
+map <Leader>bb :bd<cr>
+
 " Use U to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
+if (index(['vim','help'], &filetype) >= 0)
+  execute 'h '.expand('<cword>')
+elseif (coc#rpc#ready())
+  call CocActionAsync('doHover')
+else
+  execute '!' . &keywordprg . " " . expand('<cword>')
+endif
 endfunction
 
 " Highlight the symbol and its references when holding the cursor.
@@ -221,13 +232,20 @@ highlight GitGutterChange guifg=#bbbb00 ctermfg=3
 highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
 " Theme modify
-colorscheme xcodedarkhc
+if has('termguicolors')
+set termguicolors 
+endif
+let g:sonokai_style = 'maia'
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+colorscheme sonokai 
+
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 0
 
-let g:airline_theme='base16'
+let g:airline_theme='sonokai'
 if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
+  let g:airline_symbols = {}
 endif
 
 " unicode symbols
@@ -235,13 +253,13 @@ let g:airline_left_sep = '»'
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '«'
 let g:airline_right_sep = '◀'
-let g:airline_symbols.linenr = ' Line '
+let g:airline_symbols.linenr = ' '
 let g:airline_symbols.branch = '⎇'
 let g:airline_symbols.paste = 'ρ'
 let g:airline_symbols.paste = 'Þ'
 let g:airline_symbols.paste = '∥'
 let g:airline_symbols.maxlinenr = ' '
-let g:airline_symbols.colnr = "Col "
+let g:airline_symbols.colnr = "c."
 
 " Shortcut for view jumping
 map <C-h> <C-w>h
@@ -255,7 +273,7 @@ map <C-s> j
 map <C-w> k
 map <C-d> l
 
-nnoremap <C-Left> :tabprevious<CR>
-nnoremap <C-Right> :tabnext<CR>
-nnoremap <C-j> :tabprevious<CR>
-nnoremap <C-k> :tabnext<CR>
+"nnoremap <C-Left> :tabprevious<CR>
+"nnoremap <C-Right> :tabnext<CR>
+"nnoremap <C-j> :tabprevious<CR>
+"nnoremap <C-k> :tabnext<CR>
