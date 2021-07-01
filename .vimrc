@@ -1,5 +1,5 @@
 packloadall
-
+set rtp+=~/.vim
 syntax on
 
 hi Search ctermfg=Red cterm=bold
