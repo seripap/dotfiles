@@ -8,12 +8,6 @@ let mapleader = ','
 
 filetype plugin indent on
 
-" Bigger, better, pink-er cursor
-let &t_SI.="\e[1 q" "SI = INSERT mode
-let &t_SR.="\e[3 q" "SR = REPLACE mode
-let &t_EI.="\e[4 q" "EI = NORMAL mode (ELSE)
-
-
 " Disable Ex mode
 map q: <Nop>
 nnoremap Q <nop>
