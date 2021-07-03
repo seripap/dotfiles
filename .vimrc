@@ -244,7 +244,8 @@ let g:sonokai_style = 'maia'
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 colorscheme sonokai 
-
+" Change background to black
+hi Normal guibg=none ctermbg=none
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 0
 
