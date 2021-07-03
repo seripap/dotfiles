@@ -8,6 +8,12 @@ let mapleader = ','
 
 filetype plugin indent on
 
+" Bigger, better, pink-er cursor
+let &t_SI.="\e[1 q" "SI = INSERT mode
+let &t_SR.="\e[3 q" "SR = REPLACE mode
+let &t_EI.="\e[4 q" "EI = NORMAL mode (ELSE)
+
+
 " Disable Ex mode
 map q: <Nop>
 nnoremap Q <nop>
@@ -129,7 +135,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'jparise/vim-graphql'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -263,15 +268,15 @@ let g:airline_symbols.colnr = "c."
 
 " Shortcut for view jumping
 map <C-h> <C-w>h
-"map <C-j> <C-w>j
-"map <C-k> <C-w>k
+map <C-j> <C-w>j
+map <C-k> <C-w>k
 map <C-l> <C-w>l
 
 " Map ctrl+wsad to arrows for 60% keyboard
-map <C-a> h
-map <C-s> j
-map <C-w> k
-map <C-d> l
+"map <C-a> h
+"map <C-s> j
+"map <C-w> k
+"map <C-d> l
 
 "nnoremap <C-Left> :tabprevious<CR>
 "nnoremap <C-Right> :tabnext<CR>
