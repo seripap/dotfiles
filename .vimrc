@@ -12,6 +12,7 @@ filetype plugin indent on
 map q: <Nop>
 nnoremap Q <nop>
 
+set history=10000
 set encoding=UTF-8
 set autoindent
 set smartindent
