@@ -239,8 +239,10 @@ endif
 let g:dracula_italic = 0
 let g:dracula_colorterm = 0
 colorscheme dracula
+hi Comment guifg=#5f5f5f ctermfg=59
 " Change background to black
 "hi Normal guibg=none ctermbg=none
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 0
 
