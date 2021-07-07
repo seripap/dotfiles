@@ -120,6 +120,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'sainnhe/sonokai'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'xuyuanp/nerdtree-git-plugin'
 Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -235,16 +236,15 @@ highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 if has('termguicolors')
 set termguicolors 
 endif
-let g:sonokai_style = 'maia'
-let &t_ZH="\e[3m"
-let &t_ZR="\e[23m"
-colorscheme sonokai 
+let g:dracula_italic = 0
+let g:dracula_colorterm = 0
+colorscheme dracula
 " Change background to black
-hi Normal guibg=none ctermbg=none
+"hi Normal guibg=none ctermbg=none
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 0
 
-let g:airline_theme='sonokai'
+let g:airline_theme='dracula'
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
