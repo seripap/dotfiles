@@ -38,10 +38,12 @@ set pastetoggle=<leader>z
 set rtp+=/usr/local/bin/fzf
 
 nmap ,n :NERDTreeFind<CR>
-nmap <C-p> :Files %:p:h<CR>
+nmap <C-P> :Files %:p:h<CR>
+nmap <C-p> :Files <CR>
 nmap <F8> :TagbarToggle<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 inoremap jj <ESC>
+nmap mm :noh<CR>
 
 " copypasta
 noremap <Leader>y "*y
