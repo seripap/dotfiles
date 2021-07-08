@@ -238,12 +238,14 @@ highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 if has('termguicolors')
 set termguicolors 
 endif
+
+" colorscheme 
 let g:dracula_italic = 0
 let g:dracula_colorterm = 0
 colorscheme dracula
 hi Comment guifg=#5f5f5f ctermfg=59
-" Change background to black
-"hi Normal guibg=none ctermbg=none
+
+
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 0
@@ -272,13 +274,13 @@ map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
-" Map ctrl+wsad to arrows for 60% keyboard
-"map <C-a> h
-"map <C-s> j
-"map <C-w> k
-"map <C-d> l
-
 "nnoremap <C-Left> :tabprevious<CR>
 "nnoremap <C-Right> :tabnext<CR>
 "nnoremap <C-j> :tabprevious<CR>
 "nnoremap <C-k> :tabnext<CR>
+
+" Shift+directions to move lines
+nnoremap <S-Up> :m-2<CR>
+nnoremap <S-Down> :m+<CR>
+inoremap <S-Up> <Esc>:m-2<CR>
+inoremap <S-Down> <Esc>:m+<CR>
