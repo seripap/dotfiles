@@ -1,5 +1,3 @@
-eval "$(mcfly init bash)"
-
 autoload -Uz compinit
 for dump in ~/.zcompdump(N.mh+24); do
   compinit
@@ -9,7 +7,8 @@ compinit -C
 zmodload zsh/zprof
 export KEYID="0xE93C88B4F422B029"
 
-. /usr/local/etc/profile.d/z.sh
+. /Users/dseripap/local/cli/z.sh 
+
 alias server='open http://localhost:8000 && python -m http.server'
 alias oath='ykman oath code $(ykman oath list | fzf)'
 alias xsv='/Users/dseripap/local/xsv/target/release/xsv'
@@ -58,7 +57,9 @@ nvm() {
   nvm "$@"
 }
 
-export GOPATH="/Users/dseripap/go"
+export GOPATH=$HOME/go
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
 
 alias g="git"
 alias pip=/usr/local/bin/pip3

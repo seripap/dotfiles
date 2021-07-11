@@ -21,6 +21,7 @@
 $ git clone https://github.com/seripap/dotfiles
 $ ln -s ~/dotfiles/.vimrc ~/.vimrc
 $ ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+$ ln -s /Users/dseripap/dotfiles/coc-settings.json /Users/dseripap/.vim/coc-settings.json
 ```
 
 ### .zshrc

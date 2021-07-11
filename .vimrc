@@ -140,6 +140,8 @@ let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
 
 " coc-tsserver
 let g:coc_global_extensions = [ 'coc-tsserver' ]
+" coc-settings
+let g:coc_global_config="/Users/dseripap/dotfiles/coc-settings.json"
 
 " Prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
