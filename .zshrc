@@ -1,5 +1,12 @@
 eval "$(mcfly init zsh)"
+fpath+=$HOME/.zsh/pure
+
 autoload -Uz compinit
+autoload -U promptinit; promptinit
+prompt pure
+prompt_newline='%666v'
+PROMPT=" $PROMPT"
+
 for dump in ~/.zcompdump(N.mh+24); do
   compinit
 done
@@ -31,7 +38,7 @@ function setaws() {
 	export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 }
 
-ZSH_THEME="dracula"
+ZSH_THEME=""
 plugins=(docker brew docker-compose)
 
 source $ZSH/oh-my-zsh.sh
