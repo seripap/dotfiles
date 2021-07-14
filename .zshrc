@@ -73,3 +73,8 @@ alias g="git"
 alias pip=/usr/local/bin/pip3
 alias python=python3
 export PATH="/usr/local/sbin:$PATH"
+
+function killPort() {
+  readonly PORT_NUMBER=${1:?"Specify port number to kill"}
+  lsof -i tcp:${PORT_NUMBER} | awk 'NR!=1 {print $2}' | xargs kill
+}
