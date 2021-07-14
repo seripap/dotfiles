@@ -56,3 +56,7 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[url "https://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:x-oauth-basic@github.com/FirstStreet"]
+	insteadOf = https://github.com/FirstStreet
+[url "https://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:x-oauth-basic@github.com/firststreet"]
+	insteadOf = https://github.com/firststreet

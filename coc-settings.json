@@ -4,6 +4,8 @@
 		"typescript",
 		"typescriptreact",
 		"json",
+		"css",
+		"graphql",
 		"typescript.tsx"
 	],
 	"languageserver": {

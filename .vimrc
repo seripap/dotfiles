@@ -37,7 +37,6 @@ set pastetoggle=<leader>z
 
 set rtp+=/usr/local/bin/fzf
 
-nmap ,n :NERDTreeFind<CR>
 nmap <C-P> :Files %:p:h<CR>
 nmap <C-p> :Files <CR>
 nmap <F8> :TagbarToggle<CR>
@@ -113,6 +112,7 @@ Plug 'neoclide/coc-eslint'
 Plug 'neoclide/coc-json'
 Plug 'neoclide/coc-prettier'
 Plug 'neoclide/coc-css'
+Plug 'fannheyward/coc-styled-components'
 Plug 'josa42/coc-go'
 Plug 'josa42/coc-sh'
 Plug 'preservim/nerdcommenter'
