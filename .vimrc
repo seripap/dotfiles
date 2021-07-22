@@ -120,7 +120,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
-Plug 'sainnhe/sonokai'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'xuyuanp/nerdtree-git-plugin'
@@ -133,6 +132,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'puremourning/vimspector'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
