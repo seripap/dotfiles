@@ -2,11 +2,13 @@
 	"coc.preferences.formatOnSaveFiletypes": [
 		"javascript",
 		"typescript",
+		"javascriptreact",
 		"typescriptreact",
 		"json",
 		"css",
 		"graphql",
-		"typescript.tsx"
+		"typescript.tsx",
+		"markdown"
 	],
 	"languageserver": {
 		"golang": {

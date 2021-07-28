@@ -101,7 +101,7 @@ map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
 
-" Vim Plugins
+" Plugins
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -127,12 +127,13 @@ Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'prettier/vim-prettier', {'do': 'yarn install'}
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'puremourning/vimspector'
+Plug 'szw/vim-maximizer'
+Plug 'embark-theme/vim', { 'as': 'embark' }
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -310,3 +311,24 @@ function! s:NewLineInsertExpr( isUndoCount, command )
 endfunction
 nnoremap <silent> <expr> o <SID>NewLineInsertExpr(1, 'o')
 nnoremap <silent> <expr> O <SID>NewLineInsertExpr(1, 'O')
+
+function! GotoWindow(id)
+    :call win_gotoid(a:id)
+endfunction
+
+" debugger
+nnoremap <F5> :call vimspector#Launch()<CR>
+nnoremap <leader><F5> :call vimspector#Reset()<CR>
+nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
+nnoremap <leader>dt :call GotoWindow(g:vimspector_session_windows.tagpage)<CR>
+nnoremap <leader>dv :call GotoWindow(g:vimspector_session_windows.variables)<CR>
+nnoremap <leader>dw :call GotoWindow(g:vimspector_session_windows.watches)<CR>
+nnoremap <leader>ds :call GotoWindow(g:vimspector_session_windows.stack_trace)<CR>
+nnoremap <leader>do :call GotoWindow(g:vimspector_session_windows.output)<CR>
+
+noremap <leader>BB :call vimspector#ToggleBreakpoint()<CR>
+
+nmap <leader>dl <Plug>VimspectorStepInto
+nmap <leader>dj <Plug>VimspectorStepOver
+nmap <leader>dk <Plug>VimspectorStepOut
+nmap <leader>d_ <Plug>VimspectorRestart
