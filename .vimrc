@@ -57,6 +57,8 @@ autocmd WinEnter * setlocal cursorline
 autocmd WinLeave * setlocal nocursorline
 highlight CursorLine guibg=#e4e4e4 ctermbg=254
 
+" For tagalong
+inoremap <silent> <c-c> <c-c>:call tagalong#Apply()<cr>
 
 "autocmd VimEnter * NERDTree
 
@@ -133,7 +135,7 @@ Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'puremourning/vimspector'
 Plug 'szw/vim-maximizer'
-Plug 'embark-theme/vim', { 'as': 'embark' }
+Plug 'andrewradev/tagalong.vim'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'

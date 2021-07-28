@@ -70,8 +70,6 @@ export GOROOT="$(brew --prefix golang)/libexec"
 export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
 
 alias g="git"
-alias pip=/usr/local/bin/pip3
-alias python=python3
 export PATH="/usr/local/sbin:$PATH"
 
 function killPort() {
