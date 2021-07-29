@@ -136,6 +136,7 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'puremourning/vimspector'
 Plug 'szw/vim-maximizer'
 Plug 'andrewradev/tagalong.vim'
+Plug 'wfxr/minimap.vim'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -334,3 +335,8 @@ nmap <leader>dl <Plug>VimspectorStepInto
 nmap <leader>dj <Plug>VimspectorStepOver
 nmap <leader>dk <Plug>VimspectorStepOut
 nmap <leader>d_ <Plug>VimspectorRestart
+
+" Minimap
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
