@@ -136,7 +136,6 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'puremourning/vimspector'
 Plug 'szw/vim-maximizer'
 Plug 'andrewradev/tagalong.vim'
-Plug 'wfxr/minimap.vim'
 call plug#end()
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -146,6 +145,34 @@ let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
 let g:coc_global_extensions = [ 'coc-tsserver' ]
 " coc-settings
 let g:coc_global_config="/Users/dseripap/dotfiles/coc-settings.json"
+
+" Tagbar
+let g:tagbar_type_typescriptreact = {
+\ 'ctagstype': 'typescript',
+\ 'kinds': [
+  \ 'c:class',
+  \ 'n:namespace',
+  \ 'f:function',
+  \ 'G:generator',
+  \ 'v:variable',
+  \ 'm:method',
+  \ 'p:property',
+  \ 'i:interface',
+  \ 'g:enum',
+  \ 't:type',
+  \ 'a:alias',
+\ ],
+\'sro': '.',
+  \ 'kind2scope' : {
+  \ 'c' : 'class',
+  \ 'n' : 'namespace',
+  \ 'i' : 'interface',
+  \ 'f' : 'function',
+  \ 'G' : 'generator',
+  \ 'm' : 'method',
+  \ 'p' : 'property',
+  \},
+\ }
 
 " Prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
@@ -190,6 +217,9 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+
+" coc for vim airline
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " buffer switch
 map <Leader>b :bn<cr>
@@ -254,8 +284,7 @@ hi Comment guifg=#5f5f5f ctermfg=59
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
-let g:airline#extensions#coc#enabled = 0
-
+let g:airline#extensions#coc#enabled = 1
 let g:airline_theme='dracula'
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -335,8 +364,14 @@ nmap <leader>dl <Plug>VimspectorStepInto
 nmap <leader>dj <Plug>VimspectorStepOver
 nmap <leader>dk <Plug>VimspectorStepOut
 nmap <leader>d_ <Plug>VimspectorRestart
-
-" Minimap
-let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
+" Highlight cursor
+nnoremap <C-K> :call HighlightNearCursor()<CR>
+function HighlightNearCursor()
+  if !exists("s:highlightcursor")
+    match Todo /\k*\%#\k*/
+    let s:highlightcursor=1
+  else
+    match None
+    unlet s:highlightcursor
+  endif
+endfunction
