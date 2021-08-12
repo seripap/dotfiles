@@ -6,7 +6,9 @@ hi Search ctermfg=Red cterm=bold
 
 let mapleader = ','
 
+set nocompatible
 filetype plugin indent on
+runtime macros/matchit.vim
 
 " Disable Ex mode
 map q: <Nop>
@@ -127,6 +129,7 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'xuyuanp/nerdtree-git-plugin'
 Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'qpkorr/vim-bufkill'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
