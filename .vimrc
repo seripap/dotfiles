@@ -46,6 +46,12 @@ nnoremap <Leader>b :ls<CR>:b<Space>
 inoremap jj <ESC>
 nmap mm :noh<CR>
 
+" vim commentry like st
+map <leader>/ gcc
+
+" vsplit
+map <leader>] :vsplit<CR>
+
 " copypasta
 noremap <Leader>y "*y
 noremap <Leader>p "*p
@@ -120,6 +126,7 @@ Plug 'fannheyward/coc-styled-components'
 Plug 'josa42/coc-go'
 Plug 'josa42/coc-sh'
 Plug 'preservim/nerdcommenter'
+Plug 'tpope/vim-commentary'
 Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'

@@ -39,7 +39,8 @@
 [url "https://"]
   insteadOf = git://
 [merge]
-  tool = smerge
+  tool = vimdiff
+  prompt = false
 [github]
   user = seripap
 [gpg]
