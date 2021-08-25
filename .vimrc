@@ -2,6 +2,12 @@ packloadall
 set rtp+=~/.vim
 syntax on
 
+" Fix for tmux
+if exists('$TMUX')
+  set background=dark
+  set t_Co=256
+endif
+
 hi Search ctermfg=Red cterm=bold
 
 let mapleader = ','
@@ -143,7 +149,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'puremourning/vimspector'
+"Plug 'puremourning/vimspector'
 Plug 'szw/vim-maximizer'
 Plug 'andrewradev/tagalong.vim'
 call plug#end()
