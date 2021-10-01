@@ -120,6 +120,7 @@ nnoremap <leader>a :cclose<CR>
 " Plugins
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
+Plug 'bkad/camelcasemotion'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc.nvim'
@@ -138,7 +139,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'xuyuanp/nerdtree-git-plugin'
 Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -150,9 +150,14 @@ Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
 "Plug 'puremourning/vimspector'
+Plug 'sainnhe/sonokai'
 Plug 'szw/vim-maximizer'
 Plug 'andrewradev/tagalong.vim'
 call plug#end()
+
+" camelcase jump
+map <C-k> <Plug>CamelCaseMotion_w
+map <leader>k <Plug>CamelCaseMotion_b
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
 let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
@@ -292,16 +297,14 @@ set termguicolors
 endif
 
 " colorscheme 
-let g:dracula_italic = 0
-let g:dracula_colorterm = 0
-colorscheme dracula
+colorscheme sonokai
 hi Comment guifg=#5f5f5f ctermfg=59
 
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 1
-let g:airline_theme='dracula'
+let g:airline_theme='sonokai'
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
@@ -320,10 +323,10 @@ let g:airline_symbols.maxlinenr = ' '
 let g:airline_symbols.colnr = "c."
 
 " Shortcut for view jumping
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
+"map <C-h> <C-w>h
+"map <C-j> <C-w>j
+"map <C-k> <C-w>k
+"map <C-l> <C-w>l
 
 "nnoremap <C-Left> :tabprevious<CR>
 "nnoremap <C-Right> :tabnext<CR>
@@ -381,7 +384,7 @@ nmap <leader>dj <Plug>VimspectorStepOver
 nmap <leader>dk <Plug>VimspectorStepOut
 nmap <leader>d_ <Plug>VimspectorRestart
 " Highlight cursor
-nnoremap <C-K> :call HighlightNearCursor()<CR>
+"nnoremap <C-K> :call HighlightNearCursor()<CR>
 function HighlightNearCursor()
   if !exists("s:highlightcursor")
     match Todo /\k*\%#\k*/

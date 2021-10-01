@@ -27,7 +27,7 @@ alias killgpg="gpgconf --kill gpg-agent"
 alias imgcat="~/bin/imgcat"
 alias ks="kubectl"
 
-export BAT_THEME="Dracula"
+export BAT_THEME="Monokai Extended Bright"
 
 # setaws sets AWS credentials based on AWS_PROFILE
 function setaws() {
@@ -72,7 +72,7 @@ nvm() {
 
 export GOPATH=$HOME/go
 export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
+export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin"
 
 alias g="git"
 export PATH="/usr/local/sbin:$PATH"
