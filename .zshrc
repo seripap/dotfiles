@@ -72,10 +72,9 @@ nvm() {
 
 export GOPATH=$HOME/go
 export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin"
+export PATH="/opt/homebrew/opt/mysql-client/bin:/usr/local/sbin:$PATH:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin:/Users/dseripap/.composer/vendor/bin"
 
 alias g="git"
-export PATH="/usr/local/sbin:$PATH"
 
 function killPort() {
   readonly PORT_NUMBER=${1:?"Specify port number to kill"}

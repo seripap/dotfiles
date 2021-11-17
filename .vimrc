@@ -32,6 +32,7 @@ set ignorecase
 set showmatch
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/node_modules/*,*/vendor/*
 set re=0
+" set relativenumber
 
 set nu
 set tw=500
@@ -117,7 +118,7 @@ map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
 
-" Plugins
+" test-packagePlugins
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 Plug 'bkad/camelcasemotion'
@@ -129,6 +130,8 @@ Plug 'neoclide/coc-eslint'
 Plug 'neoclide/coc-json'
 Plug 'neoclide/coc-prettier'
 Plug 'neoclide/coc-css'
+Plug 'neoclide/coc-yaml'
+Plug 'marlonfan/coc-phpls'
 Plug 'fannheyward/coc-styled-components'
 Plug 'josa42/coc-go'
 Plug 'josa42/coc-sh'
@@ -144,7 +147,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf.vim' 
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
@@ -153,6 +156,9 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'sainnhe/sonokai'
 Plug 'szw/vim-maximizer'
 Plug 'andrewradev/tagalong.vim'
+Plug 'vim-scripts/RltvNmbr.vim'
+Plug 'andymass/vim-matchup'
+Plug 'vim-test/vim-test'
 call plug#end()
 
 " camelcase jump
@@ -394,3 +400,19 @@ function HighlightNearCursor()
     unlet s:highlightcursor
   endif
 endfunction
+
+
+" For tests
+nmap <silent> t<C-n> :TestNearest<CR>
+nmap <silent> t<C-f> :TestFile<CR>
+nmap <silent> t<C-s> :TestSuite<CR>
+nmap <silent> t<C-l> :TestLast<CR>
+nmap <silent> t<C-g> :TestVisit<CR>
+let test#strategy = {
+  \ 'nearest': 'vimterminal',
+  \ 'file': 'basic',
+  \ 'suite': 'basic',
+\}
+
+let test#javascript#jest#executable = "NODE_ENV=test npm test"
+let g:test#javascript#runner = 'jest'
