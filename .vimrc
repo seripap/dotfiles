@@ -16,10 +16,28 @@ set nocompatible
 filetype plugin indent on
 runtime macros/matchit.vim
 
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['eslint'],
+\}
+let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+
+" Gutter / ALE colors
+highlight ALEWarning guibg=#fce566 guifg=#37282c term=bold
+highlight ALEError guibg=#fc618d guifg=#ffffff term=bold
+highlight CursorLine term=bold cterm=bold guibg=Grey40
+highlight GitGutterAdd    guifg=#009900
+highlight GitGutterChange guifg=#5ad4e6
+highlight GitGutterDelete guifg=#ff2222
+
+" Highlight text over cursor
+"autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
+
 " Disable Ex mode
 map q: <Nop>
 nnoremap Q <nop>
-
+let g:ale_disable_lsp = 1
 set history=10000
 set encoding=UTF-8
 set autoindent
@@ -32,7 +50,6 @@ set ignorecase
 set showmatch
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/node_modules/*,*/vendor/*
 set re=0
-" set relativenumber
 
 set nu
 set tw=500
@@ -124,7 +141,6 @@ Plug 'junegunn/vim-easy-align'
 Plug 'bkad/camelcasemotion'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc.nvim'
 Plug 'neoclide/coc-tsserver'
 Plug 'neoclide/coc-eslint'
 Plug 'neoclide/coc-json'
@@ -147,18 +163,21 @@ Plug 'sheerun/vim-polyglot'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'qpkorr/vim-bufkill'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim' 
+Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
 Plug 'AndrewRadev/splitjoin.vim'
-"Plug 'puremourning/vimspector'
+Plug 'puremourning/vimspector'
 Plug 'sainnhe/sonokai'
 Plug 'szw/vim-maximizer'
 Plug 'andrewradev/tagalong.vim'
 Plug 'vim-scripts/RltvNmbr.vim'
 Plug 'andymass/vim-matchup'
 Plug 'vim-test/vim-test'
+Plug 'dense-analysis/ale'
+Plug 'chrisbra/colorizer'
+Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
 call plug#end()
 
 " camelcase jump
@@ -299,18 +318,25 @@ highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
 " Theme modify
 if has('termguicolors')
-set termguicolors 
+set termguicolors
 endif
 
-" colorscheme 
-colorscheme sonokai
+    if exists('+termguicolors')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+      set termguicolors
+    endif
+
+
+" colorscheme
+colorscheme spaceduck
 hi Comment guifg=#5f5f5f ctermfg=59
 
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 1
-let g:airline_theme='sonokai'
+let g:airline_theme='base16'
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
@@ -383,7 +409,8 @@ nnoremap <leader>dw :call GotoWindow(g:vimspector_session_windows.watches)<CR>
 nnoremap <leader>ds :call GotoWindow(g:vimspector_session_windows.stack_trace)<CR>
 nnoremap <leader>do :call GotoWindow(g:vimspector_session_windows.output)<CR>
 
-noremap <leader>BB :call vimspector#ToggleBreakpoint()<CR>
+noremap <leader>dh :call vimspector#ToggleBreakpoint()<CR>
+noremap <leader>dx :call vimspector#ClearBreakpoints()<CR>
 
 nmap <leader>dl <Plug>VimspectorStepInto
 nmap <leader>dj <Plug>VimspectorStepOver
