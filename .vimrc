@@ -83,7 +83,7 @@ endif
 
 let g:dracula_colorterm = 0
 syntax enable
-colorscheme dracula_pro
+colorscheme dracula_pro_buffy
 
 " Airline
 let g:airline_theme='dracula_pro'

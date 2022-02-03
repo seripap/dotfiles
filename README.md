@@ -19,9 +19,13 @@
 
 ```
 $ git clone https://github.com/seripap/dotfiles
-$ ln -s ~/dotfiles/.vimrc ~/.vimrc
 $ ln -s ~/dotfiles/.gitconfig ~/.gitconfig
-$ ln -s /Users/dseripap/dotfiles/coc-settings.json /Users/dseripap/.vim/coc-settings.json
+# VIM
+$ ln -s ~/dotfiles/.vimrc ~/.vimrc
+# NVIM
+$ ln -s ~/dotfiles/.vimrc ~/.config/nvim/init.vim
+$ ln -s ~/dotfiles/lua/lsp-autocomplete.lua ~/.config/nvim/lua/lsp-autocomplete.lua
+$ ln -s ~/dotfiles/lua/lsp-config.lua ~/.config/nvim/lua/lsp-config.lua
 ```
 
 ### .zshrc
