@@ -15,7 +15,7 @@ compinit -C
 zmodload zsh/zprof
 export KEYID="0xE93C88B4F422B029"
 
-. /Users/dseripap/local/cli/z.sh 
+. /Users/dseripap/local/cli/z.sh
 
 alias server='open http://localhost:8000 && python -m http.server'
 alias oath='ykman oath code $(ykman oath list | fzf)'
@@ -27,7 +27,7 @@ alias killgpg="gpgconf --kill gpg-agent"
 alias imgcat="~/bin/imgcat"
 alias ks="kubectl"
 
-export BAT_THEME="Monokai Extended Bright"
+export BAT_THEME="Dracula"
 
 # setaws sets AWS credentials based on AWS_PROFILE
 function setaws() {
@@ -47,12 +47,12 @@ if type rg &> /dev/null; then
 	export FZF_DEFAULT_COMMAND='rg --files'
     export FZF_DEFAULT_OPTS="-m --height 50% --border"
     # Dracula fzf theme
-    # export FZF_DEFAULT_OPTS='--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
-    export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
---color=dark
---color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
---color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
-'
+    export FZF_DEFAULT_OPTS='--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
+    #export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+#--color=dark
+#--color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
+#--color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+#'
 fi
 
 function processInPort() {
@@ -81,3 +81,5 @@ function killPort() {
   lsof -i tcp:${PORT_NUMBER} | awk 'NR!=1 {print $2}' | xargs kill
 }
 ctags=/opt/homebrew/bin/ctags
+alias vim="nvim"
+alias vi="nvim"
