@@ -1,6 +1,6 @@
 # Dan's Dotfiles
 
-### wa wa wee wa
+Should work decently with vim and nvim.
 
 ## Dependencies
 
@@ -11,6 +11,8 @@
 - brew install ctags-exuberant
 
 ## How to
+
+TODO: make an autoinstaller...
 
 1. Create symlink
 2. `:PlugInstall`
@@ -39,4 +41,4 @@ fi
 ### Notes
 
 - `<C-wsad>` are mapped to `hjkl`, because small keyboards
-- `<C-hjkl>` are mapped to `<C-w> <C-w> hjkl`
+- Credits go to [jessfraz](https://github.com/jessfraz/.vim) for a bunch of the plugin configs

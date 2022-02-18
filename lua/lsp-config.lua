@@ -10,10 +10,10 @@ end
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+vim.api.nvim_set_keymap('n', '<Leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
 vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+vim.api.nvim_set_keymap('n', '<Leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -31,7 +31,7 @@ local on_attach = function(client, bufnr)
     vim.cmd("command! LspDiagLine lua vim.diagnostic.open_float()")
     vim.cmd("command! LspSignatureHelp lua vim.lsp.buf.signature_help()")
     buf_map(bufnr, "n", "gd", ":LspDef<CR>")
-    buf_map(bufnr, "n", "gr", ":LspRename<CR>")
+    buf_map(bufnr, "n", "gr", ":LspRefs<CR>")
     buf_map(bufnr, "n", "gy", ":LspTypeDef<CR>")
     buf_map(bufnr, "n", "K", ":LspHover<CR>")
     buf_map(bufnr, "n", "[a", ":LspDiagPrev<CR>")
@@ -47,7 +47,7 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'rust_analyzer', 'cssmodules_ls', 'graphql', 'html', 'intelephense', 'jsonls',  'cssls', 'yamlls', 'bashls'}
+local servers = { 'pyright', 'rust_analyzer', 'cssmodules_ls', 'graphql', 'html', 'intelephense', 'jsonls',  'yamlls', 'bashls'}
   local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {
@@ -75,11 +75,25 @@ require('lspconfig').tsserver.setup({
     end,
 })
 
+require('lspconfig').tailwindcss.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    tailwindCSS = {
+      classAttributes = { 'class' , 'className' , 'classList' }
+    }
+  }
+}
+
+require('lspconfig').cssls.setup {
+		on_attach = on_attach;
+    capabilities = capabilities
+	}
 
 null_ls.setup({
     sources = {
-        null_ls.builtins.diagnostics.eslint, -- eslint or eslint_d
-        null_ls.builtins.code_actions.eslint, -- eslint or eslint_d
-        null_ls.builtins.formatting.prettier -- prettier, eslint, eslint_d, or prettierd
+        null_ls.builtins.diagnostics.eslint_d, -- eslint or eslint_d
+        null_ls.builtins.code_actions.eslint_d, -- eslint or eslint_d
+        null_ls.builtins.formatting.prettierd -- prettier, eslint, eslint_d, or prettierd
     },
 })

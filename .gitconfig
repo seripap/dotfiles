@@ -15,6 +15,8 @@
   ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
   dsf = "!f() { [ -z \"$GIT_PREFIX\" ] || cd \"$GIT_PREFIX\" && git diff --color \"$@\" | diff-so-fancy  | less --tabs=4 -RFX; }; f"
   tt = tag --sort v:refname
+  ignore = update-index --assume-unchanged 
+  unignore = update-index --no-assume-unchanged 
 [color]
   branch = auto
   diff = auto
@@ -43,7 +45,7 @@
 [url "https://"]
   insteadOf = git://
 [merge]
-  tool = vimdiff
+  tool = nvimdiff
   prompt = false
 [github]
   user = seripap
@@ -63,3 +65,9 @@
   required = true
 [credential "https://dev.azure.com"]
 	useHttpPath = true
+[difftool]
+    prompt = true
+[diff]
+    tool = nvimdiff
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
