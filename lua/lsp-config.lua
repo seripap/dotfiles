@@ -1,11 +1,9 @@
 local null_ls = require("null-ls")
 
-local opts = { noremap=true, silent=true }
+local opts = {noremap = true, silent = true}
 
 local buf_map = function(bufnr, mode, lhs, rhs, opts)
-    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts or {
-        silent = true,
-    })
+    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts or {silent = true})
 end
 
 -- Mappings.
@@ -41,27 +39,27 @@ local on_attach = function(client, bufnr)
     buf_map(bufnr, "i", "<C-x><C-x>", "<cmd> LspSignatureHelp<CR>")
     if client.resolved_capabilities.document_formatting then
         vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
-		-- vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()")
+        -- vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()")
     end
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'rust_analyzer', 'cssmodules_ls', 'graphql', 'html', 'intelephense', 'jsonls',  'yamlls', 'bashls'}
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local servers = {'pyright', 'rust_analyzer', 'cssmodules_ls', 'graphql', 'html', 'intelephense', 'jsonls', 'yamlls', 'bashls'}
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 for _, lsp in pairs(servers) do
-  require('lspconfig')[lsp].setup {
-	capabilities = capabilities,
-    on_attach = on_attach,
-    flags = {
-      -- This will be the default in neovim 0.7+
-      debounce_text_changes = 150,
+    require('lspconfig')[lsp].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        flags = {
+            -- This will be the default in neovim 0.7+
+            debounce_text_changes = 150
+        }
     }
-  }
 end
 
 require('lspconfig').tsserver.setup({
-		capabilities = capabilities,
+    capabilities = capabilities,
     on_attach = function(client, bufnr)
         client.resolved_capabilities.document_formatting = false
         client.resolved_capabilities.document_range_formatting = false
@@ -71,29 +69,67 @@ require('lspconfig').tsserver.setup({
         buf_map(bufnr, "n", "gs", ":TSLspOrganize<CR>")
         buf_map(bufnr, "n", "gi", ":TSLspRenameFile<CR>")
         buf_map(bufnr, "n", "go", ":TSLspImportAll<CR>")
-		on_attach(client, bufnr)
-    end,
+        on_attach(client, bufnr)
+    end
 })
 
 require('lspconfig').tailwindcss.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  settings = {
-    tailwindCSS = {
-      classAttributes = { 'class' , 'className' , 'classList' }
-    }
-  }
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {tailwindCSS = {classAttributes = {'class', 'className', 'classList'}}}
 }
 
-require('lspconfig').cssls.setup {
-		on_attach = on_attach;
-    capabilities = capabilities
-	}
+-- require('lspconfig').cssls.setup {on_attach = on_attach, capabilities = capabilities}
+
+require('lspconfig').stylelint_lsp.setup {settings = {stylelintplus = {autoFixOnSave = true, autoFixOnFormat = true}}}
+
+-- require'lspconfig'.sumneko_lua.setup {
+-- settings = {
+--   Lua = {
+--     runtime = {
+--       -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+--       version = 'LuaJIT',
+--       -- Setup your lua path
+--       path = '/opt/homebrew/bin/lua',
+--     },
+--     diagnostics = {
+--       -- Get the language server to recognize the `vim` global
+--       globals = {'vim'},
+--     },
+--     workspace = {
+--       -- Make the server aware of Neovim runtime files
+--       library = vim.api.nvim_get_runtime_file("", true),
+--     },
+--     -- Do not send telemetry data containing a randomized but unique identifier
+--     telemetry = {
+--       enable = false,
+--     },
+--   },
+-- },
+-- }
+
+require"lspconfig".efm.setup {
+    init_options = {documentFormatting = true},
+    filetypes = {"lua"},
+    settings = {
+        rootMarkers = {".git/"},
+        languages = {
+            lua = {
+                {
+                    formatCommand = "lua-format -i --no-keep-simple-function-one-line --no-break-after-operator --column-limit=150 --break-after-table-lb",
+                    formatStdin = true
+                }
+            }
+        }
+    }
+}
+
+require'lspconfig'.gopls.setup{}
 
 null_ls.setup({
     sources = {
         null_ls.builtins.diagnostics.eslint_d, -- eslint or eslint_d
         null_ls.builtins.code_actions.eslint_d, -- eslint or eslint_d
         null_ls.builtins.formatting.prettierd -- prettier, eslint, eslint_d, or prettierd
-    },
+    }
 })

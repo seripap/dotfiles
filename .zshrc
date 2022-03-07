@@ -72,7 +72,7 @@ nvm() {
 
 export GOPATH=$HOME/go
 export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="/opt/homebrew/opt/mysql-client/bin:/usr/local/sbin:$PATH:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin:/Users/dseripap/.composer/vendor/bin"
+export PATH="/opt/homebrew/opt/mysql-client/bin:/usr/local/sbin:$PATH:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin:/Users/dseripap/.composer/vendor/bin:/Users/dseripap/.cargo/bin"
 
 alias g="git"
 
@@ -83,3 +83,6 @@ function killPort() {
 ctags=/opt/homebrew/bin/ctags
 alias vim="nvim"
 alias vi="nvim"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

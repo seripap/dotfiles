@@ -10,10 +10,17 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
 " yavascript
 Plug 'leafgarland/typescript-vim'
 
-" For vsnip users.
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'
 
@@ -181,8 +188,8 @@ lua require('lsp-config')
 lua require('lsp-autocomplete')
 endif
 
-nmap <C-P> :Files %:p:h<CR>
-nmap <C-p> :Files <CR>
+" nmap <C-P> :Files %:p:h<CR>
+" nmap <C-p> :Files <CR>
 nmap <F8> :TagbarToggle<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 inoremap jj <ESC>
@@ -226,6 +233,12 @@ set shortmess+=c
 set cursorline
 ""autocmd WinEnter * setlocal cursorline
 ""autocmd WinLeave * setlocal nocursorline
+
+" Use deoplete
+let g:deoplete#enable_at_startup = 1
+
+" Enable deoplete for golang
+call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
 
 " ============================= vim-which-key ============================
 " Setup WhichKey here for our leader.
@@ -327,7 +340,13 @@ extensions = { 'nvim-tree'}
 EOF
 endif
 
+"" Lua Formatting
+autocmd BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 100)
+
+
 "" Golang settings
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
 let g:go_addtags_transform = "camelcase"
 let g:go_highlight_operators = 1
 let g:go_fmt_autosave = 1
@@ -361,20 +380,8 @@ autocmd FileType go nmap <leader>t  <Plug>(go-test)
 autocmd FileType go noremap <F5> :GoDebugStart
 autocmd FileType go noremap <Leader>b :GoDebugBreakpoint<CR>
 autocmd FileType go noremap <Leader>n :GoDebugContinue<CR>
+autocmd FileType go noremap <Leader>d  <Plug>(go-def)
 
-"call plug#begin('~/.vim/plugged')
-"Plug 'bkad/camelcasemotion'
-"Plug 'tpope/vim-surround'
-"Plug 'majutsushi/tagbar'
-"Plug 'AndrewRadev/splitjoin.vim'
-"Plug 'andrewradev/tagalong.vim'
-"Plug 'andymass/vim-matchup'
-"call plug#end()
-
-
-"" camelcase jump
-"map <C-k> <Plug>CamelCaseMotion_w
-"map <leader>k <Plug>CamelCaseMotion_b
 
 " ==================== nvim-treesitter.lua ====================
 if has ('nvim')
@@ -519,6 +526,7 @@ if has('nvim')
   lua << EOF
 require('telescope').setup{
   defaults = {
+    layout_strategy = "horizontal",
     mappings = {
       i = {
         -- map actions.which_key to ?
@@ -534,7 +542,6 @@ require('telescope').setup{
   },
   pickers = {
     find_files = {
-      theme = "dropdown",
       find_command = {"rg", "--ignore", "--hidden", "--files"},
       },
     live_grep = {
