@@ -1,6 +1,7 @@
 {
-  "diagnostic.displayByAle": true,
   "javascript.suggestionActions.enabled": false,
+  "coc.preferences.useQuickfixForLocations": false,
+  "eslint.autoFixOnSave": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "javascript",
     "typescript",
@@ -25,15 +26,15 @@
       "command": "graphql-lsp",
       "args": ["server", "-m", "stream"],
       // customize filetypes to your needs
-      "filetypes": ["typescript", "typescriptreact", "graphql"]
+      "filetypes": ["graphql"]
     },
-   "intelephense": {
-    "command": "intelephense",
-    "args": ["--stdio"],
-    "filetypes": ["php"],
-    "initializationOptions": {
-      "storagePath": "/tmp/intelephense"
+    "intelephense": {
+      "command": "intelephense",
+      "args": ["--stdio"],
+      "filetypes": ["php"],
+      "initializationOptions": {
+        "storagePath": "/tmp/intelephense"
+      }
     }
-  }   
   }
 }
