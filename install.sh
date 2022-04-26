@@ -6,8 +6,8 @@ unzip /tmp/awscli-bundle.zip -d /tmp
 /tmp/awscli-bundle/install -b /usr/bin/aws
 rm -rf /tmp/awscli-bundle*
 
-echo "Linking vimrc"
-ln -s .vimrc $HOME/.vimrc
+# echo "Linking vimrc"
+# ln -s .vimrc $HOME/.vimrc
 
-echo "Linking .zshrc"
-ln -s .zshrc $HOME/.zshrc
+# echo "Linking .zshrc"
+# ln -s .zshrc $HOME/.zshrc
