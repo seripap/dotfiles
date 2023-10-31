@@ -1,0 +1,25 @@
+{
+	"color_scheme": "Mariana.sublime-color-scheme",
+	"font_size": 18,
+	"caret_style": "smooth",
+	"vintage_use_clipboard": true,
+	// "font_options": ["no_bold"],
+	"vintage_start_in_command_mode": true,
+	"highlight_line": true,
+	"folder_exclude_patterns": ["node_modules"],
+	"file_exclude_patterns": ["*.pyc", "*.pyo", "*.exe", "*.dll", "*.obj","*.o", "*.a", "*.lib", "*.so", "*.dylib", "*.ncb", "*.sdf", "*.suo", "*.pdb", "*.idb", ".DS_Store", ".directory", "desktop.ini", "*.class", "*.psd", "*.db", "*.sublime-workspace"],
+	"binary_file_patterns": ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.ttf", "*.tga", "*.dds", "*.ico", "*.eot", "*.pdf", "*.swf", "*.jar", "*.zip"],
+	"ignored_packages": [
+		"JSON Reindent",
+		"LSP-Dart",
+		"LSP-dockerfile",
+		"Pretty JSON",
+		"Six",
+	],
+	"font_face": "Operator Mono Book",
+	"theme": "Default Dark.sublime-theme",
+	"added_words":
+	[
+		"s"
+	],
+}

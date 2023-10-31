@@ -1,11 +1,18 @@
 {
-  "javascript.suggestionActions.enabled": false,
+  "suggest.triggerAfterInsertEnter": false,
+  "suggest.timeout": 8000,
+  "suggest.enablePreview": true,
+  "suggest.detailField": "preview",
+  "suggest.autoTrigger": "always",
+  "typescript.referencesCodeLens.enable": true,
+  "typescript.suggest.includeAutomaticOptionalChainCompletions": true,
+  "typescript.suggest.enabled": true,
+  "typescript.suggest.completeFunctionCalls": true,
   "coc.preferences.useQuickfixForLocations": false,
   "eslint.autoFixOnSave": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "javascript",
     "typescript",
-    "yaml",
     "yaml.docker-compose",
     "javascriptreact",
     "typescriptreact",
@@ -25,7 +32,6 @@
     "graphql": {
       "command": "graphql-lsp",
       "args": ["server", "-m", "stream"],
-      // customize filetypes to your needs
       "filetypes": ["graphql"]
     },
     "intelephense": {

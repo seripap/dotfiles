@@ -25,6 +25,8 @@ export ZSH=/Users/dseripap/.oh-my-zsh
 alias killgpg="gpgconf --kill gpg-agent"
 alias ks="kubectl"
 
+alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+
 export BAT_THEME="Dracula"
 
 # setaws sets AWS credentials based on AWS_PROFILE
@@ -69,7 +71,7 @@ nvm() {
 
 export GOPATH=$HOME/go
 export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="/opt/homebrew/opt/mysql-client/bin:/usr/local/sbin:$PATH:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin:/Users/dseripap/.composer/vendor/bin:/Users/dseripap/.cargo/bin"
+export PATH="/opt/homebrew/opt/grep/libexec/gnubin:/opt/homebrew/opt/mysql-client/bin:/usr/local/sbin:${GOPATH}/bin:${GOROOT}/bin:~/.qsh/bin:/Users/dseripap/.composer/vendor/bin:/Users/dseripap/.cargo/bin:/opt/homebrew/bin:${PATH}"
 
 alias g="git"
 
@@ -78,8 +80,8 @@ function killPort() {
   lsof -i tcp:${PORT_NUMBER} | awk 'NR!=1 {print $2}' | xargs kill
 }
 ctags=/opt/homebrew/bin/ctags
-#alias vim="nvim"
-#alias vi="nvim"
+alias vim="nvim"
+alias vi="nvim"
 #alias vimdiff='nvim -d'
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
@@ -106,3 +108,11 @@ export PATH="$PATH:$HOME/.rvm/bin"
     }
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# bun completions
+[ -s "/Users/dseripap/.bun/_bun" ] && source "/Users/dseripap/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

@@ -1,0 +1,15 @@
+// Documentation at https://www.sublimetext.com/docs/color_schemes.html
+{
+	"variables":
+	{
+	},
+	"globals":
+	{
+		"background": "rgb(40, 44, 52)",
+		"caret": "rgb(96, 147, 192)"
+	},
+	"rules":
+	[
+		
+	]
+}

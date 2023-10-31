@@ -1,0 +1,6 @@
+{
+	"enabled": true,
+	"settings": {
+		"completion_style": "phantom"
+	}
+}

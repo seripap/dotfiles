@@ -4,11 +4,13 @@ Should work decently with vim and nvim.
 
 ## Dependencies
 
-- fzf (autoloaded)
-- [silver searcher](https://github.com/ggreer/the_silver_searcher) for Ag
-- [rg](https://github.com/BurntSushi/ripgrep)
-- diff-so-fancy (brew install diff-so-fancy)
-- brew install ctags-exuberant
+-  fzf (autoloaded)
+-  [silver searcher](https://github.com/ggreer/the_silver_searcher) for Ag
+-  [rg](https://github.com/BurntSushi/ripgrep)
+-  diff-so-fancy (brew install diff-so-fancy)
+-  brew install ctags-exuberant
+-  brew install pure
+-  Sublime backup
 
 ## How to
 
@@ -28,9 +30,11 @@ $ ln -s ~/dotfiles/.vimrc ~/.vimrc
 $ ln -s ~/dotfiles/.vimrc ~/.config/nvim/init.vim
 $ ln -s ~/dotfiles/lua/lsp-autocomplete.lua ~/.config/nvim/lua/lsp-autocomplete.lua
 $ ln -s ~/dotfiles/lua/lsp-config.lua ~/.config/nvim/lua/lsp-config.lua
+$ ln -s /Users/dseripap/dotfiles/sublime-text/Packages /Users/dseripap/Library/Application\ Support/Sublime\ Text/Packages
 ```
 
 ### .zshrc
+
 ```
 if type rg &> /dev/null; then
    export FZF_DEFAULT_COMMAND='rg --files --hidden'
@@ -40,5 +44,4 @@ fi
 
 ### Notes
 
-- `<C-wsad>` are mapped to `hjkl`, because small keyboards
-- Credits go to [jessfraz](https://github.com/jessfraz/.vim) for a bunch of the plugin configs
+-  `<C-wsad>` are mapped to `hjkl`, because small keyboards

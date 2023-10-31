@@ -2,34 +2,38 @@ set re=0
 
 call plug#begin()
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc-tsserver'
-Plug 'neoclide/coc-eslint'
-Plug 'neoclide/coc-json'
-Plug 'neoclide/coc-prettier'
-Plug 'neoclide/coc-css'
-Plug 'neoclide/coc-yaml'
-Plug 'marlonfan/coc-phpls'
-Plug 'fannheyward/coc-styled-components'
-Plug 'josa42/coc-go'
-Plug 'josa42/coc-sh'
-Plug 'fannheyward/coc-pyright'
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc-tsserver'
+"Plug 'neoclide/coc-eslint'
+"Plug 'neoclide/coc-json'
+" Plug 'neoclide/coc-prettier'
+"Plug 'neoclide/coc-css'
+"Plug 'neoclide/coc-yaml'
+"Plug 'marlonfan/coc-phpls'
+"Plug 'fannheyward/coc-styled-components'
+"Plug 'josa42/coc-go'
+"Plug 'josa42/coc-sh'
+"Plug 'fannheyward/coc-pyright'
+Plug 'mhartington/oceanic-next'
+Plug 'wbthomason/packer.nvim'
+Plug 'neovim/nvim-lspconfig'
 
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'nvim-lualine/lualine.nvim'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
 
 " yavascript
 Plug 'HerringtonDarkholme/yats.vim'
 
-Plug 'pangloss/vim-javascript'    " JavaScript support
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'html'] }    
 Plug 'leafgarland/typescript-vim'
-Plug 'bigfish/vim-js-context-coloring'
-Plug 'peitalin/vim-jsx-typescript'
+" Plug 'bigfish/vim-js-context-coloring'
+" Plug 'peitalin/vim-jsx-typescript'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
 
-Plug 'prettier/vim-prettier'
+" Plug 'prettier/vim-prettier'
 " Allows fast commenting
 Plug 'tpope/vim-commentary'
 
@@ -59,6 +63,8 @@ Plug 'dracula/vim', { 'name': 'dracula' }
 
 Plug 'preservim/nerdtree'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'github/copilot.vim'
+
 call plug#end()
 
 " set t_Co=256
@@ -85,12 +91,15 @@ if has('termguicolors')
 endif
 
 "" Colors
-packadd! dracula_pro
-if !exists("g:syntax_on")
-    syntax enable
-endif
-let g:dracula_colorterm = 0
-colorscheme dracula_pro_buffy
+" packadd! dracula_pro
+" if !exists("g:syntax_on")
+"     syntax enable
+" endif
+" let g:dracula_colorterm = 0
+" colorscheme dracula_pro_buffy
+let g:oceanic_next_terminal_bold = 1
+let g:oceanic_next_terminal_italic = 1
+colorscheme OceanicNext
 highlight Normal ctermbg=None
 
 "" Defaults
@@ -179,10 +188,10 @@ inoremap jj <ESC>
 nmap mm :noh<CR>
 
 "" Prettier Settings
-let g:prettier#autoformat_config_present = 1
-let g:prettier#autoformat_require_pragma = 0
+" let g:prettier#autoformat_config_present = 1
+" let g:prettier#autoformat_require_pragma = 0
 
-nmap <Leader>py <Plug>(Prettier)
+" nmap <Leader>py <Plug>(Prettier)
 
 set pastetoggle=<leader>z
 
@@ -229,94 +238,29 @@ nmap <silent> t<C-l> :TestLast<CR>
 nmap <silent> t<C-g> :TestVisit<CR>
 
 let test#strategy = {
-  \ 'nearest': 'vimterminal',
+  \ 'nearest': 'neovim',
   \ 'file': 'basic',
   \ 'suite': 'basic',
 \}
 
-let test#javascript#jest#executable = "NODE_ENV=test npm test"
+let test#javascript#jest#executable = "NODE_ENV=test npm test -- -u"
 let g:test#javascript#runner = 'jest'
 
-"" coc Settings
-" -----------------------------------------
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-function! s:check_back_space() abort
- let col = col('.') - 1
- return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-inoremap <silent><expr> <TAB>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<TAB>" :
-    \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
 " Use `[c` and `]c` to navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
+"nmap <silent> [c <Plug>(coc-diagnostic-prev)
+"nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+"nmap <silent> gd <Plug>(coc-definition)
+"nmap <silent> gy <Plug>(coc-type-definition)
+"nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gr <Plug>(coc-references)
 
-" coc for vim airline
-" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " buffer switch
 map <Leader>b :bn<cr>
 map <Leader>B :bp<cr>
 map <Leader>bb :bd<cr>
-
-" Use U to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-if (index(['vim','help'], &filetype) >= 0)
-  execute 'h '.expand('<cword>')
-elseif (coc#rpc#ready())
-  call CocActionAsync('doHover')
-else
-  execute '!' . &keywordprg . " " . expand('<cword>')
-endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Remap for format selected region
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-" coc-tsserver
-let g:coc_global_extensions = [ 'coc-tsserver' ]
-
-" coc-settings
-let g:coc_global_config="/Users/dseripap/dotfiles/coc-settings.json"
 
 
 """ Golang settings
@@ -370,7 +314,8 @@ let g:coverage_show_covered = 0
 let g:coverage_show_uncovered = 1
 
 "" Airline
-let g:airline_theme='dracula'
+" let g:airline_theme='dracula'
+let g:airline_theme='oceanicnext'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#coc#enabled = 1
@@ -392,3 +337,9 @@ let g:airline_symbols.maxlinenr = ' '
 let g:airline_symbols.colnr = "c."
 
 autocmd BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw  
+
+"nmap <leader>i :CocCommand tsserver.organizeImports<cr>
+
+if has('nvim')
+  tmap <C-o> <C-\><C-n>
+endif
