@@ -1,5 +1,6 @@
 eval "$(mcfly init zsh)"
-fpath+=$HOME/.zsh/pure
+#fpath+=$HOME/.zsh/pure
+fpath+=("$(brew --prefix)/share/zsh/site-functions")
 
 autoload -Uz compinit
 autoload -U promptinit; promptinit
@@ -7,6 +8,7 @@ prompt pure
 prompt_newline='%666v'
 PROMPT=" $PROMPT"
 
+OPENAI_API_KEY="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"
 for dump in ~/.zcompdump(N.mh+24); do
   compinit
 done
@@ -116,3 +118,4 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+source /Users/dseripap/.config/op/plugins.sh

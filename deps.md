@@ -7,6 +7,7 @@
 ## Install other dependencies
 
 ```
+brew install pure
 brew install fzf
 brew install bat
 brew install the_silver_searcher
