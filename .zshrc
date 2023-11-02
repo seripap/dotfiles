@@ -8,7 +8,6 @@ prompt pure
 prompt_newline='%666v'
 PROMPT=" $PROMPT"
 
-OPENAI_API_KEY="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"
 for dump in ~/.zcompdump(N.mh+24); do
   compinit
 done
