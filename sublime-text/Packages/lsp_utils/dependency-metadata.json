@@ -1,1 +1,0 @@
-{"sublime_text": ">=4070", "description": "Module with LSP-related utilities", "platforms": ["*"], "url": "https://github.com/sublimelsp/lsp_utils/issues", "version": "3.0.1"}

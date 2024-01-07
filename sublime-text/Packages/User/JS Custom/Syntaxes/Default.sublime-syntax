@@ -1,7 +1,13 @@
 %YAML 1.2
 ---
+name: JS Custom - Default
+file_extensions:
+  - js
+  - mjs
+  - cjs
+  - htc
+
 version: 2
-scope: source.js.default
 variables:
   shebang_lang: \b(?:node|js)\b
 
@@ -92,17 +98,7 @@ variables:
 # '@' followed by a pattern like \S but excluding literal '*' and '@'.
   jsdoc_block_tag: \@[^\n\t\f\v *@]+
 
-first_line_match: |-
-  (?xi:
-    ^ \#! .* \b(?:node|js)\b                              # shebang
-  | ^ \s* // .*? -\*- .*? \b(?:js|javascript)\b .*? -\*-  # editorconfig
-  )
-file_extensions:
-  - js
-  - mjs
-  - cjs
-  - htc
-
+scope: source.js.default
 contexts:
   main:
     - meta_include_prototype: false # don't match comments before shebang
@@ -2614,4 +2610,8 @@ contexts:
           pop: 1
         - include: object-property
     - include: else-pop
-name: JS Custom - Default
+first_line_match: |-
+  (?xi:
+    ^ \#! .* \b(?:node|js)\b                              # shebang
+  | ^ \s* // .*? -\*- .*? \b(?:js|javascript)\b .*? -\*-  # editorconfig
+  )

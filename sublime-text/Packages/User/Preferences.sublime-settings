@@ -13,8 +13,8 @@
 		"JSON Reindent",
 		"LSP-Dart",
 		"LSP-dockerfile",
+		"Markdown Extended",
 		"Pretty JSON",
-		"Six",
 	],
 	"font_face": "Operator Mono Book",
 	"theme": "Default Dark.sublime-theme",
@@ -22,4 +22,5 @@
 	[
 		"s"
 	],
+	"index_files": true,
 }

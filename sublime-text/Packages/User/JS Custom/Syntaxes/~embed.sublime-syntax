@@ -1,5 +1,8 @@
 %YAML 1.2
 ---
+name: JS Custom (Embedded)
+file_extensions: []
+version: 2
 variables:
   shebang_lang: \b(?:node|js)\b
 
@@ -90,15 +93,7 @@ variables:
 # '@' followed by a pattern like \S but excluding literal '*' and '@'.
   jsdoc_block_tag: \@[^\n\t\f\v *@]+
 
-file_extensions: []
-first_line_match: |-
-  (?xi:
-    ^ \#! .* \b(?:node|js)\b                              # shebang
-  | ^ \s* // .*? -\*- .*? \b(?:js|javascript)\b .*? -\*-  # editorconfig
-  )
 hidden: true
-name: JS Custom (Embedded)
-version: 2
 scope: source.js
 contexts:
   main:
@@ -2611,3 +2606,8 @@ contexts:
           pop: 1
         - include: object-property
     - include: else-pop
+first_line_match: |-
+  (?xi:
+    ^ \#! .* \b(?:node|js)\b                              # shebang
+  | ^ \s* // .*? -\*- .*? \b(?:js|javascript)\b .*? -\*-  # editorconfig
+  )
