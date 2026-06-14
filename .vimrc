@@ -2,44 +2,26 @@ set re=0
 
 call plug#begin()
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"Plug 'neoclide/coc-tsserver'
-"Plug 'neoclide/coc-eslint'
-"Plug 'neoclide/coc-json'
-" Plug 'neoclide/coc-prettier'
-"Plug 'neoclide/coc-css'
-"Plug 'neoclide/coc-yaml'
-"Plug 'marlonfan/coc-phpls'
-"Plug 'fannheyward/coc-styled-components'
-"Plug 'josa42/coc-go'
-"Plug 'josa42/coc-sh'
-"Plug 'fannheyward/coc-pyright'
 Plug 'mhartington/oceanic-next'
 Plug 'wbthomason/packer.nvim'
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'nvim-lualine/lualine.nvim'
-"Plug 'vim-airline/vim-airline'
-"Plug 'vim-airline/vim-airline-themes'
 
 " yavascript
 Plug 'HerringtonDarkholme/yats.vim'
 
 Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'html'] }
 Plug 'leafgarland/typescript-vim'
-" Plug 'bigfish/vim-js-context-coloring'
-" Plug 'peitalin/vim-jsx-typescript'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
 
-" Plug 'prettier/vim-prettier'
-" Allows fast commenting
+" Fast commenting
 Plug 'tpope/vim-commentary'
 
 " Git
 Plug 'airblade/vim-gitgutter'
-" Plug 'tpope/vim-fugitive'
 
 Plug 'sheerun/vim-polyglot'
 
@@ -91,12 +73,6 @@ if has('termguicolors')
 endif
 
 "" Colors
-" packadd! dracula_pro
-" if !exists("g:syntax_on")
-"     syntax enable
-" endif
-" let g:dracula_colorterm = 0
-" colorscheme dracula_pro_buffy
 let g:oceanic_next_terminal_bold = 1
 let g:oceanic_next_terminal_italic = 1
 colorscheme OceanicNext
@@ -187,12 +163,6 @@ nnoremap <Leader>b :ls<CR>:b<Space>
 inoremap jj <ESC>
 nmap mm :noh<CR>
 
-"" Prettier Settings
-" let g:prettier#autoformat_config_present = 1
-" let g:prettier#autoformat_require_pragma = 0
-
-" nmap <Leader>py <Plug>(Prettier)
-
 set pastetoggle=<leader>z
 
 "" vsplit
@@ -224,11 +194,6 @@ set shortmess+=c
 "" NERDTree
 nmap <leader>q :NERDTreeToggle<cr>
 
-"" GitGutter
-" highlight DiffAdd guibg=DraculaGreen
-" highlight DiffChange guibg=DraculaOrange
-" highlight DiffDelete guibg=DraculaRed
-
 "" vim-test settings
 nmap <silent> t<C-n> :TestNearest<CR>
 nmap <silent> t<C-f> :TestFile<CR>
@@ -245,23 +210,6 @@ let test#strategy = {
 
 let test#javascript#jest#executable = "NODE_ENV=test npm test -- -u"
 let g:test#javascript#runner = 'jest'
-
-" Use `[c` and `]c` to navigate diagnostics
-"nmap <silent> [c <Plug>(coc-diagnostic-prev)
-"nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-"nmap <silent> gd <Plug>(coc-definition)
-"nmap <silent> gy <Plug>(coc-type-definition)
-"nmap <silent> gi <Plug>(coc-implementation)
-"nmap <silent> gr <Plug>(coc-references)
-
-
-" buffer switch
-map <Leader>b :bn<cr>
-map <Leader>B :bp<cr>
-map <Leader>bb :bd<cr>
-
 
 """ Golang settings
 let g:go_def_mode='gopls'
@@ -293,7 +241,6 @@ let g:go_highlight_variable_assignments = 1
 let g:go_fmt_experimental = 1
 let g:go_metalinter_autosave=1
 let g:go_metalinter_autosave_enabled=['golint', 'govet', 'errcheck']
-"autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
 autocmd FileType go nmap <leader>r  <Plug>(go-run)
 autocmd FileType go nmap <leader>t  <Plug>(go-test)
 autocmd FileType go noremap <F5> :GoDebugStart
@@ -314,7 +261,6 @@ let g:coverage_show_covered = 0
 let g:coverage_show_uncovered = 1
 
 "" Airline
-" let g:airline_theme='dracula'
 let g:airline_theme='oceanicnext'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#whitespace#enabled = 0
@@ -337,8 +283,6 @@ let g:airline_symbols.maxlinenr = ' '
 let g:airline_symbols.colnr = "c."
 
 autocmd BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
-
-"nmap <leader>i :CocCommand tsserver.organizeImports<cr>
 
 if has('nvim')
   tmap <C-o> <C-\><C-n>
