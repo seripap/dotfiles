@@ -16,6 +16,11 @@
   tt = tag --sort v:refname
   ignore = update-index --assume-unchanged
   unignore = update-index --no-assume-unchanged
+  undo = reset HEAD~1 --mixed
+  pr = !"f(){ git fetch origin pull/$1/head:pr-$1 && git checkout pr-$1; }; f"
+  dm = !git branch --merged | grep -v '\\*' | xargs -n1 git branch -d
+  fc = !"f(){ git log --pretty=format:'%C(yellow)%h %Cgreen%ad %Creset%s' --date=short -S\"$1\"; }; f"
+  alias = !git config -l | grep ^alias | cut -c 7- | sort
 [color]
   branch = auto
   diff = auto
@@ -66,16 +71,13 @@
 [credential "https://dev.azure.com"]
 	useHttpPath = true
 [difftool]
-    prompt = true
+  prompt = true
 [diff]
-    tool = nvimdiff
+  tool = nvimdiff
+  external = difft
 [difftool "diff-so-fancy"]
-    cmd = "diff-so-fancy | less --tabs=4 -RFX"
+  cmd = "diff-so-fancy | less --tabs=4 -RFX"
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+  insteadOf = https://github.com/
 [push]
   autoSetupRemote = true
-[diff]
-  external = difft
-[push]
-	autoSetupRemote = true

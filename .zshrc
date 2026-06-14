@@ -71,6 +71,15 @@ autoload -Uz compinit && compinit -i
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
+# Tool-specific completions (load after compinit, before syntax-highlighting)
+command -v gh      >/dev/null 2>&1 && eval "$(gh completion -s zsh)"
+if command -v kubectl >/dev/null 2>&1; then
+  source <(kubectl completion zsh)
+  compdef __start_kubectl ks                # make `ks` autocomplete like `kubectl`
+fi
+command -v flox >/dev/null 2>&1 && eval "$(flox completions zsh 2>/dev/null)"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
 # ---------- Aliases ----------
 alias ll='ls -lhG'
 alias la='ls -lhAG'
@@ -190,6 +199,14 @@ _ask() {
   rm -f "$tmpout"
   return $rc
 }
+
+# ---------- zsh plugins (must be near the bottom; syntax-highlighting goes LAST) ----------
+if [ -n "$HOMEBREW_PREFIX" ]; then
+  [ -f "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && \
+    . "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [ -f "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && \
+    . "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 # ---------- Per-machine extras ----------
 [ -f "$HOME/.extra" ] && . "$HOME/.extra"
