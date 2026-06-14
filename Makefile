@@ -20,6 +20,12 @@ install:
 	done
 	@mkdir -p "$$HOME/.config/coc"
 	@ln -sfn "$(DOTFILES)/coc-settings.json" "$$HOME/.config/coc/coc-settings.json" && echo "link coc-settings.json"
+	@mkdir -p "$$HOME/.ssh" && chmod 700 "$$HOME/.ssh"
+	@if [ -e "$$HOME/.ssh/config" ] && [ ! -L "$$HOME/.ssh/config" ]; then \
+		echo "skip .ssh/config (exists, not a symlink) — fold hosts into ~/.ssh/config.local, then rerun"; \
+	else \
+		ln -sfn "$(DOTFILES)/.ssh/config" "$$HOME/.ssh/config" && echo "link .ssh/config"; \
+	fi
 	@mkdir -p "$$HOME/.claude"
 	@for f in CLAUDE.md settings.json; do \
 		if [ -e "$$HOME/.claude/$$f" ] && [ ! -L "$$HOME/.claude/$$f" ]; then \
@@ -38,6 +44,9 @@ uninstall:
 	done
 	@if [ -L "$$HOME/.config/coc/coc-settings.json" ]; then \
 		rm "$$HOME/.config/coc/coc-settings.json" && echo "unlink coc-settings.json"; \
+	fi
+	@if [ -L "$$HOME/.ssh/config" ]; then \
+		rm "$$HOME/.ssh/config" && echo "unlink .ssh/config"; \
 	fi
 	@for f in CLAUDE.md settings.json; do \
 		if [ -L "$$HOME/.claude/$$f" ]; then \

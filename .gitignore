@@ -1,4 +1,5 @@
 .DS_Store
 .extra
+.ssh/config.local
 
 **/.claude/settings.local.json

@@ -41,7 +41,7 @@
   helper = osxkeychain
 [core]
   pager = less -RFX
-  excludesfile = /Users/dseripap/.gitignore
+  excludesfile = ~/.gitignore
   editor = nvim
 [url "https://"]
   insteadOf = git://
