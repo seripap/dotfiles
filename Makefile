@@ -28,6 +28,7 @@ install:
 			ln -sfn "$(DOTFILES)/.claude/$$f" "$$HOME/.claude/$$f" && echo "link .claude/$$f"; \
 		fi; \
 	done
+	@defaults write -g InitialKeyRepeat -int 15 && echo "set InitialKeyRepeat=15 (log out + back in to apply)"
 
 uninstall:
 	@for f in $(HOME_FILES); do \

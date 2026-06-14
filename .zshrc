@@ -123,6 +123,48 @@ getcertnames() {                                                       # dump CN
   echo | openssl s_client -showcerts -servername "$d" -connect "$d:443" 2>/dev/null \
     | openssl x509 -text -certopt no_header,no_serial,no_version,no_signame,no_validity,no_issuer,no_pubkey,no_sigdump,no_aux
 }
+# `caf` / `uncaf` — keep Mac awake until told otherwise.
+# Bare `caf` toggles. Explicit: `caf on`, `caf off`, `caf status`.
+# Persists across shells via a pidfile; RPROMPT shows `caf` in yellow when active.
+_CAF_PIDFILE="${TMPDIR:-/tmp}/caffeinate-$USER.pid"
+_caf_active() { [ -f "$_CAF_PIDFILE" ] && kill -0 "$(cat "$_CAF_PIDFILE" 2>/dev/null)" 2>/dev/null; }
+caf() {
+  case "${1:-toggle}" in
+    on|start)
+      if _caf_active; then
+        echo "already caffeinated (pid $(cat "$_CAF_PIDFILE"))"
+        return 0
+      fi
+      # silence zsh's "[4] 12345" / "[4] + done" job-control chatter
+      setopt LOCAL_OPTIONS NO_MONITOR NO_NOTIFY
+      nohup caffeinate -di >/dev/null 2>&1 &
+      echo $! > "$_CAF_PIDFILE"
+      disown
+      echo "caffeinated (pid $(cat "$_CAF_PIDFILE"))"
+      ;;
+    off|stop)
+      if _caf_active && kill "$(cat "$_CAF_PIDFILE")" 2>/dev/null; then
+        rm -f "$_CAF_PIDFILE"
+        echo "uncaffeinated"
+      else
+        [ -f "$_CAF_PIDFILE" ] && rm -f "$_CAF_PIDFILE"   # stale
+        echo "not caffeinated"
+      fi
+      ;;
+    toggle) _caf_active && caf off || caf on ;;
+    status)
+      if _caf_active; then
+        echo "caffeinated (pid $(cat "$_CAF_PIDFILE"))"
+      else
+        [ -f "$_CAF_PIDFILE" ] && rm -f "$_CAF_PIDFILE"
+        echo "not caffeinated"
+      fi
+      ;;
+    *) echo "usage: caf [on|off|toggle|status]" >&2; return 1 ;;
+  esac
+}
+uncaf() { caf off; }
+
 extract() {                                                            # DTRT for any archive type
   local f=$1
   [ -z "$f" ] && { echo "usage: extract <archive>" >&2; return 1; }
@@ -165,6 +207,21 @@ if [ -d "$(brew --prefix 2>/dev/null)/share/zsh/site-functions" ]; then
 fi
 PURE_PROMPT_SYMBOL='$'
 autoload -U promptinit 2>/dev/null && promptinit && prompt pure 2>/dev/null
+
+# Caffeinated indicator in RPROMPT.
+# pure sets RPROMPT once at setup with embedded var refs — cache it here so our
+# hook can rebuild RPROMPT from a fixed base instead of mutating in place
+# (which accumulated "caf caf caf" each precmd).
+typeset -g _CAF_RPROMPT_BASE="$RPROMPT"
+_caf_rprompt() {
+  if _caf_active; then
+    RPROMPT="%F{yellow}caffinated%f${_CAF_RPROMPT_BASE:+ $_CAF_RPROMPT_BASE}"
+  else
+    RPROMPT="$_CAF_RPROMPT_BASE"
+  fi
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _caf_rprompt
 
 # ---------- Claude quick-ask ----------
 # `ask <q>` — ask Claude about recent terminal output (recorded by script(1) above).
