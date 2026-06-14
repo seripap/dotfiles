@@ -83,16 +83,7 @@ State lives in `$TMPDIR/caffeinate-$USER.pid`. Stale pidfiles (after reboot, for
 
 ## Remote development sandbox
 
-Run the ever-living commands (Claude agents, builds, tests) on an always-on Mac
-so they survive a closed lid, then reach them from any machine. Editing stays
-local; only the persistent work lives on the server.
-
-```
-  laptop / phone ──Tailscale/SSH──► sandbox Mac (never sleeps)
-   (open/close freely)               └─ tmux session: claude, builds, tests keep running
-```
-
-### On the server (the always-on Mac)
+### On the server 
 
 ```sh
 git clone https://github.com/seripap/dotfiles ~/dotfiles
@@ -107,7 +98,7 @@ toolchain (incl. tmux), links the dotfiles, and prints the exact
 for a stable name with no port-forwarding, and the `claude` CLI if you want to
 run agents there.
 
-### On the client (your laptop)
+### On the client 
 
 Add the host to `~/.ssh/config.local` (the template in `~/.ssh/config` carries
 the ControlMaster + keepalive defaults), then:
