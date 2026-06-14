@@ -7,10 +7,17 @@
 # Set CLAUDE_NO_RECORD=1 to opt out for a specific shell.
 if [ -z "$CLAUDE_SCRIPT_ACTIVE" ] && [ -z "$CLAUDE_NO_RECORD" ] \
    && [ -t 0 ] && [ -t 1 ] && command -v script >/dev/null 2>&1; then
+  # Sweep stale logs from shells that didn't clean up (>1 day old)
+  find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'claude_session_*.log' -mtime +1 -delete 2>/dev/null
   export CLAUDE_SCRIPT_ACTIVE=1
   export CLAUDE_SESSION_LOG="${TMPDIR:-/tmp}/claude_session_$$.log"
-  trap 'rm -f "$CLAUDE_SESSION_LOG"' EXIT
   exec script -F -q "$CLAUDE_SESSION_LOG" "$SHELL"
+fi
+
+# Inner (script-wrapped) shell: register cleanup. Set here, not before exec —
+# EXIT traps don't survive process replacement.
+if [ -n "$CLAUDE_SCRIPT_ACTIVE" ] && [ -n "$CLAUDE_SESSION_LOG" ]; then
+  trap 'rm -f "$CLAUDE_SESSION_LOG"' EXIT
 fi
 
 # ---------- PATH ----------

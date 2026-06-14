@@ -17,7 +17,7 @@ make install  # symlink dotfiles into $HOME
 
 | Path | Purpose |
 | --- | --- |
-| `.zshrc` | Shell config — PATH, history, aliases, fzf, pure prompt, z-jump |
+| `.zshrc` | Shell config — PATH, history, aliases, fzf, pure prompt, z-jump, `ask` |
 | `.vimrc` | Neovim config — plugins via vim-plug, Go/JS/TS, oceanic-next |
 | `.gitconfig` | Git aliases, diff-so-fancy + difft, SSH commit signing |
 | `.gitignore` | Global gitignore (referenced by `.gitconfig`) |
@@ -26,6 +26,25 @@ make install  # symlink dotfiles into $HOME
 | `bin/` | Personal scripts on `$PATH` |
 | `Brewfile` | Homebrew dependencies (`brew bundle`) |
 | `Makefile` | `install`, `uninstall`, `brew`, `test` targets |
+
+## `ask` — quick Claude lookups against terminal output
+
+Interactive shells are auto-recorded via `script(1)` to `$TMPDIR/claude_session_<pid>.log` (removed on exit). The `ask` function feeds the recent scrollback to `claude -p` so you can ask questions about whatever just printed.
+
+```sh
+$ ls -l
+...
+$ ask how many files here?
+$ ask any of these look suspicious?
+$ ask "with quotes still works"
+```
+
+Notes:
+- Requires the `claude` CLI on `$PATH` (uses your existing Claude subscription).
+- An `noglob` alias means unquoted prompts containing `?`, `*`, `[...]` stay literal.
+- A braille spinner runs while Claude thinks; output prints when done.
+- Tunables: `CLAUDE_ASK_LINES` (default `300`) controls how much scrollback is sent. Set `CLAUDE_NO_RECORD=1` before opening a shell to disable recording for that session.
+- TUIs (vim, less, fzf) write a lot of escape codes; ANSI stripping handles most of it but their output won't be pristine.
 
 ## Secrets and per-machine config
 
