@@ -29,7 +29,7 @@ make install  # symlink dotfiles into $HOME
 
 ## `ask` — quick Claude lookups against terminal output
 
-Interactive shells are auto-recorded via `script(1)` to `$TMPDIR/claude_session_<pid>.log` (removed on exit). The `ask` function feeds the recent scrollback to `claude -p` so you can ask questions about whatever just printed.
+Interactive shells are auto-recorded via `script(1)` to `$TMPDIR/claude_session_<pid>.log`. Logs are removed when the shell exits cleanly; a startup sweep also reaps anything older than 1 day in case a shell was killed. The `ask` function feeds the recent scrollback to `claude -p` so you can ask questions about whatever just printed.
 
 ```sh
 $ ls -l
