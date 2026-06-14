@@ -54,16 +54,6 @@ Operate Claude CLI tasks while honoring user preferences and house style. Other 
 - Reuse the repo's existing design system first. If there is none, build one from shared tokens and primitives. Prefer mature accessible building blocks over reinventing widgets.
 - In Rust + React/TypeScript repos, Rust is the source of truth for shared types. Use `ts-rs` to generate bindings, not hand-maintained interfaces.
 
-### Playwright & Electron E2E
-
-- Use typed fixtures and app-side test facets, not ad-hoc helpers that smuggle state through globals. Read the official Playwright fixture docs and the existing repo setup before adding machinery.
-- Do not stuff state onto `window` to bridge app and Playwright. Test code, page code, and Electron main are three separate environments, design accordingly.
-- Assert user-visible behavior or durable application state. Do not add internal event tracking just to prove a click fired, unless the event itself is the contract.
-- If a test must observe an internal event, scope the listener to that assertion or fixture lifetime. No long-lived globals across windows or tests.
-- For native menus and Electron shell flows, use the real UI or an app-side fixture that activates the existing menu item. Do not dynamically create menu items during tests.
-- Keep platform-specific branching in the application or main-process helper. Playwright specs should ask the app for the action and assert the result, not duplicate OS logic.
-- Keep diffs small. Reuse helpers when behavior matches, inline trivial checks instead of one-off abstractions.
-
 ### Python
 
 - We use `uv` and `pyproject.toml` everywhere. Prefer `uv sync`. No `pip` venvs, Poetry, or `requirements.txt` unless asked. If you add a Nix shell, include `uv`.
