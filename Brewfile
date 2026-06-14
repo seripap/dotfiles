@@ -5,13 +5,16 @@ brew "coreutils"  # gstdbuf (line-buffered ask streaming), gtruncate, etc.
 brew "zsh-autosuggestions"     # ghost-text completion from history
 brew "zsh-syntax-highlighting" # commands turn green when valid, red when not
 brew "zoxide"                  # smarter cd — `z foo` jumps to most-used matching dir
+brew "fzf-tab"                 # fzf-powered tab completions
 
 # Search / inspect
 brew "ripgrep"
 brew "the_silver_searcher"
 brew "bat"
+brew "eza"           # modern ls with git status + tree
 brew "jq"
 brew "yq"            # jq for YAML — pairs with k8s manifests
+brew "tealdeer"      # `tldr <cmd>` — community-curated examples
 
 # Diff
 brew "difftastic"

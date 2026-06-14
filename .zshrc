@@ -84,9 +84,16 @@ command -v flox >/dev/null 2>&1 && eval "$(flox completions zsh 2>/dev/null)"
 command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
 
 # ---------- Aliases ----------
-alias ll='ls -lhG'
-alias la='ls -lhAG'
-alias l='ls -CFG'
+if command -v eza >/dev/null 2>&1; then
+  alias ll='eza -l --git --group-directories-first --icons=auto'
+  alias la='eza -la --git --group-directories-first --icons=auto'
+  alias l='eza --group-directories-first --icons=auto'
+  alias lt='eza --tree --level=2 --git-ignore --icons=auto'
+else
+  alias ll='ls -lhG'
+  alias la='ls -lhAG'
+  alias l='ls -CFG'
+fi
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -115,6 +122,27 @@ getcertnames() {                                                       # dump CN
   [ -z "$d" ] && { echo "usage: getcertnames <domain>" >&2; return 1; }
   echo | openssl s_client -showcerts -servername "$d" -connect "$d:443" 2>/dev/null \
     | openssl x509 -text -certopt no_header,no_serial,no_version,no_signame,no_validity,no_issuer,no_pubkey,no_sigdump,no_aux
+}
+extract() {                                                            # DTRT for any archive type
+  local f=$1
+  [ -z "$f" ] && { echo "usage: extract <archive>" >&2; return 1; }
+  [ ! -f "$f" ] && { echo "extract: $f: no such file" >&2; return 1; }
+  case "$f" in
+    *.tar.bz2|*.tbz2) tar xjf "$f" ;;
+    *.tar.gz|*.tgz)   tar xzf "$f" ;;
+    *.tar.xz|*.txz)   tar xJf "$f" ;;
+    *.tar.zst)        tar --zstd -xf "$f" ;;
+    *.tar)            tar xf "$f" ;;
+    *.bz2)            bunzip2 "$f" ;;
+    *.gz)             gunzip "$f" ;;
+    *.xz)             unxz "$f" ;;
+    *.zst)            unzstd "$f" ;;
+    *.zip|*.jar)      unzip "$f" ;;
+    *.7z)             7z x "$f" ;;
+    *.rar)            unrar x "$f" ;;
+    *.Z)              uncompress "$f" ;;
+    *) echo "extract: unsupported format: $f" >&2; return 1 ;;
+  esac
 }
 
 # ---------- zoxide (smarter cd) ----------
@@ -209,6 +237,9 @@ _ask() {
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=80
 ZSH_AUTOSUGGEST_STRATEGY=(history)
 if [ -n "$HOMEBREW_PREFIX" ]; then
+  # fzf-tab MUST load after compinit and BEFORE autosuggestions/syntax-highlighting
+  [ -f "$HOMEBREW_PREFIX/share/fzf-tab/fzf-tab.plugin.zsh" ] && \
+    . "$HOMEBREW_PREFIX/share/fzf-tab/fzf-tab.plugin.zsh"
   [ -f "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && \
     . "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
   [ -f "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && \
