@@ -1,6 +1,7 @@
 # Shell / prompt
 brew "pure"
 brew "fzf"
+brew "coreutils"  # gstdbuf (line-buffered ask streaming), gtruncate, etc.
 
 # Search / inspect
 brew "ripgrep"

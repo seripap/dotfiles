@@ -4,20 +4,42 @@
 
 # ---------- Claude session recording ----------
 # Auto-record interactive sessions via script(1) so `ask` can read previous output.
-# Set CLAUDE_NO_RECORD=1 to opt out for a specific shell.
+# - Set CLAUDE_NO_RECORD=1 to opt out for a specific shell.
+# - Prefix a command with a space to keep it out of the session log (mirrors HIST_IGNORE_SPACE).
 if [ -z "$CLAUDE_SCRIPT_ACTIVE" ] && [ -z "$CLAUDE_NO_RECORD" ] \
    && [ -t 0 ] && [ -t 1 ] && command -v script >/dev/null 2>&1; then
   # Sweep stale logs from shells that didn't clean up (>1 day old)
   find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'claude_session_*.log' -mtime +1 -delete 2>/dev/null
   export CLAUDE_SCRIPT_ACTIVE=1
   export CLAUDE_SESSION_LOG="${TMPDIR:-/tmp}/claude_session_$$.log"
-  exec script -F -q "$CLAUDE_SESSION_LOG" "$SHELL"
+  : > "$CLAUDE_SESSION_LOG"  # start fresh; -a below opens in O_APPEND mode
+  exec script -F -a -q "$CLAUDE_SESSION_LOG" "$SHELL"
 fi
 
-# Inner (script-wrapped) shell: register cleanup. Set here, not before exec —
-# EXIT traps don't survive process replacement.
+# Inner (script-wrapped) shell setup
 if [ -n "$CLAUDE_SCRIPT_ACTIVE" ] && [ -n "$CLAUDE_SESSION_LOG" ]; then
+  # EXIT traps don't survive `exec`, so register cleanup here
   trap 'rm -f "$CLAUDE_SESSION_LOG"' EXIT
+
+  # Leading-space commands get truncated from the log after they run.
+  # Works because script -a opens with O_APPEND — external truncation is safe.
+  typeset -g _CLAUDE_OFFSET=0
+  _claude_save_offset() {
+    _CLAUDE_OFFSET=$(wc -c <"$CLAUDE_SESSION_LOG" 2>/dev/null | tr -d ' ')
+    [ -z "$_CLAUDE_OFFSET" ] && _CLAUDE_OFFSET=0
+  }
+  _claude_maybe_redact() {
+    [ -z "$_CLAUDE_REDACT_NEXT" ] && return
+    perl -e 'truncate $ARGV[0], $ARGV[1]' "$CLAUDE_SESSION_LOG" "$_CLAUDE_OFFSET" 2>/dev/null
+    unset _CLAUDE_REDACT_NEXT
+  }
+  _claude_mark_redact() {
+    case "$1" in ' '*) typeset -g _CLAUDE_REDACT_NEXT=1 ;; esac
+  }
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd _claude_maybe_redact   # truncate first (using old offset)
+  add-zsh-hook precmd _claude_save_offset    # then save offset for the next command
+  add-zsh-hook preexec _claude_mark_redact
 fi
 
 # ---------- PATH ----------
@@ -92,6 +114,17 @@ autoload -U promptinit 2>/dev/null && promptinit && prompt pure 2>/dev/null
 # `ask <q>` — ask Claude about recent terminal output (recorded by script(1) above).
 # Pipes still work too: `ls -l | claude -p "..."`
 # Tunable: CLAUDE_ASK_LINES (default 300) = how much scrollback to feed Claude.
+# `ask-clean` — remove all claude_session_*.log files (including the current one,
+# which gets re-created empty so recording continues).
+ask-clean() {
+  local dir="${TMPDIR:-/tmp}"
+  local count
+  count=$(find "$dir" -maxdepth 1 -name 'claude_session_*.log' 2>/dev/null | wc -l | tr -d ' ')
+  find "$dir" -maxdepth 1 -name 'claude_session_*.log' -delete 2>/dev/null
+  [ -n "$CLAUDE_SESSION_LOG" ] && : > "$CLAUDE_SESSION_LOG"
+  echo "ask-clean: removed $count session log(s)"
+}
+
 # Allow unquoted prompts like `ask how many files?` — disables glob expansion of ?, *, [...]
 alias ask='noglob _ask'
 _ask() {
@@ -105,29 +138,40 @@ _ask() {
   local tmpout
   tmpout=$(mktemp -t claude_ask) || return 1
 
-  # Run claude in background, buffer to a tmp file
+  # Force line-buffered claude output if gstdbuf is available (brew install coreutils).
+  # Falls back to default block buffering if not installed — output still works, just chunkier.
+  local linebuf=()
+  command -v gstdbuf >/dev/null 2>&1 && linebuf=(gstdbuf -oL)
+
+  # Run claude in background, writing to tmpfile so we can both spin AND stream
   { tail -n "$lines" "$CLAUDE_SESSION_LOG" \
       | sed -E $'s/\x1b\\[[0-9;?]*[a-zA-Z]//g; s/\r$//' \
       | sed '$d' \
-      | claude -p "$*" >"$tmpout" 2>&1 ; } &
+      | $linebuf claude -p "$*" >"$tmpout" 2>&1 ; } &
   local pid=$!
 
-  # Braille spinner while claude is working
+  # Phase 1: braille spinner while we wait for claude's first byte
   local frames=(⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏)
   local i=1
   printf '\033[?25l'  # hide cursor
-  trap "kill $pid 2>/dev/null; printf '\r\033[K\033[?25h'; rm -f '$tmpout'" INT
-  while kill -0 $pid 2>/dev/null; do
+  local tail_pid=
+  trap "kill $pid $tail_pid 2>/dev/null; printf '\r\033[K\033[?25h'; rm -f '$tmpout'" INT
+  while kill -0 $pid 2>/dev/null && [ ! -s "$tmpout" ]; do
     printf '\r\033[36m%s\033[0m thinking…' "${frames[i]}"
     i=$(( i % 10 + 1 ))
     sleep 0.08
   done
-  printf '\r\033[K\033[?25h'  # clear spinner, show cursor
-  trap - INT
+  printf '\r\033[K\033[?25h'  # clear spinner line
 
+  # Phase 2: stream output. tail -f from byte 0 until claude exits.
+  tail -f -c +0 "$tmpout" 2>/dev/null &
+  tail_pid=$!
   wait $pid 2>/dev/null
   local rc=$?
-  cat "$tmpout" 2>/dev/null
+  sleep 0.1  # let tail drain any final bytes claude flushed on exit
+  kill $tail_pid 2>/dev/null
+  wait $tail_pid 2>/dev/null
+  trap - INT
   rm -f "$tmpout"
   return $rc
 }

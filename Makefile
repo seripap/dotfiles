@@ -20,6 +20,12 @@ install:
 	done
 	@mkdir -p "$$HOME/.config/coc"
 	@ln -sfn "$(DOTFILES)/coc-settings.json" "$$HOME/.config/coc/coc-settings.json" && echo "link coc-settings.json"
+	@mkdir -p "$$HOME/.claude"
+	@if [ -e "$$HOME/.claude/CLAUDE.md" ] && [ ! -L "$$HOME/.claude/CLAUDE.md" ]; then \
+		echo "skip .claude/CLAUDE.md (exists, not a symlink) — back it up and rerun"; \
+	else \
+		ln -sfn "$(DOTFILES)/.claude/CLAUDE.md" "$$HOME/.claude/CLAUDE.md" && echo "link .claude/CLAUDE.md"; \
+	fi
 
 uninstall:
 	@for f in $(HOME_FILES); do \
@@ -29,6 +35,9 @@ uninstall:
 	done
 	@if [ -L "$$HOME/.config/coc/coc-settings.json" ]; then \
 		rm "$$HOME/.config/coc/coc-settings.json" && echo "unlink coc-settings.json"; \
+	fi
+	@if [ -L "$$HOME/.claude/CLAUDE.md" ]; then \
+		rm "$$HOME/.claude/CLAUDE.md" && echo "unlink .claude/CLAUDE.md"; \
 	fi
 
 brew:
