@@ -122,6 +122,7 @@ alias bd='. bd -si'
 alias cat='bat --paging=never --style=plain'
 alias grep='grep --color=auto'
 alias vim='nvim'
+alias vi='nvim'
 alias map='xargs -n1'                                                  # `find . -name foo | map dirname`
 alias flush='dscacheutil -flushcache && killall -HUP mDNSResponder'    # macOS DNS cache flush
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
@@ -319,3 +320,5 @@ fi
 
 # ---------- Per-machine extras ----------
 [ -f "$HOME/.extra" ] && . "$HOME/.extra"
+
+source ~/local/fs-global/scripts/fsdev.sh
