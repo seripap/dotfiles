@@ -12,24 +12,38 @@ if [ -z "$CLAUDE_SCRIPT_ACTIVE" ] && [ -z "$CLAUDE_NO_RECORD" ] \
   find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'claude_session_*.log' -mtime +1 -delete 2>/dev/null
   export CLAUDE_SCRIPT_ACTIVE=1
   export CLAUDE_SESSION_LOG="${TMPDIR:-/tmp}/claude_session_$$.log"
+  # PID of the shell that *owns* the log — only this shell deletes on EXIT.
+  # Sub-shells (flox activate, turbo dev, direnv, ...) inherit CLAUDE_SESSION_LOG
+  # but must NOT clean it up when they exit. Without this, every sub-shell exit
+  # would rm the log and break `ask` in the parent.
+  export CLAUDE_SCRIPT_OWNER_PID=$$
   : > "$CLAUDE_SESSION_LOG"  # start fresh; -a below opens in O_APPEND mode
   exec script -F -a -q "$CLAUDE_SESSION_LOG" "$SHELL"
 fi
 
 # Inner (script-wrapped) shell setup
 if [ -n "$CLAUDE_SCRIPT_ACTIVE" ] && [ -n "$CLAUDE_SESSION_LOG" ]; then
-  # EXIT traps don't survive `exec`, so register cleanup here
-  trap 'rm -f "$CLAUDE_SESSION_LOG"' EXIT
+  # EXIT traps don't survive `exec`, so register cleanup here — but ONLY the
+  # original script(1)-wrapped shell should delete the log. Sub-shells that
+  # source .zshrc (flox, turbo, direnv) inherit the env vars; their EXIT
+  # would otherwise rm the file out from under us.
+  if [ "$CLAUDE_SCRIPT_OWNER_PID" = "$$" ] || [ -z "$CLAUDE_SCRIPT_OWNER_PID" ]; then
+    trap 'rm -f "$CLAUDE_SESSION_LOG"' EXIT
+  fi
 
   # Leading-space commands get truncated from the log after they run.
   # Works because script -a opens with O_APPEND — external truncation is safe.
   typeset -g _CLAUDE_OFFSET=0
   _claude_save_offset() {
+    # Guard: if the log went missing (sub-shell race, manual rm, etc.), no-op
+    # silently instead of letting zsh's redirect-open error reach the prompt.
+    [ -f "$CLAUDE_SESSION_LOG" ] || { _CLAUDE_OFFSET=0; return; }
     _CLAUDE_OFFSET=$(wc -c <"$CLAUDE_SESSION_LOG" 2>/dev/null | tr -d ' ')
     [ -z "$_CLAUDE_OFFSET" ] && _CLAUDE_OFFSET=0
   }
   _claude_maybe_redact() {
     [ -z "$_CLAUDE_REDACT_NEXT" ] && return
+    [ -f "$CLAUDE_SESSION_LOG" ] || { unset _CLAUDE_REDACT_NEXT; return; }
     perl -e 'truncate $ARGV[0], $ARGV[1]' "$CLAUDE_SESSION_LOG" "$_CLAUDE_OFFSET" 2>/dev/null
     unset _CLAUDE_REDACT_NEXT
   }
