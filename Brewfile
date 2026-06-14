@@ -2,6 +2,8 @@
 brew "pure"
 brew "fzf"
 brew "coreutils"  # gstdbuf (line-buffered ask streaming), gtruncate, etc.
+brew "zsh-autosuggestions"     # ghost-text completion from history
+brew "zsh-syntax-highlighting" # commands turn green when valid, red when not
 
 # Search / inspect
 brew "ripgrep"

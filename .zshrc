@@ -89,6 +89,21 @@ alias bd='. bd -si'
 alias cat='bat --paging=never --style=plain'
 alias grep='grep --color=auto'
 alias vim='nvim'
+alias map='xargs -n1'                                                  # `find . -name foo | map dirname`
+alias flush='dscacheutil -flushcache && killall -HUP mDNSResponder'    # macOS DNS cache flush
+alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
+alias week='date +%V'                                                  # ISO week number
+alias serve='python3 -m http.server'
+
+# ---------- Functions ----------
+mkd() { mkdir -p "$@" && cd "$_" || return; }
+tmpd() { local d; d=$(mktemp -d) && cd "$d" || return; }
+getcertnames() {                                                       # dump CN + SANs from a TLS cert
+  local d=$1
+  [ -z "$d" ] && { echo "usage: getcertnames <domain>" >&2; return 1; }
+  echo | openssl s_client -showcerts -servername "$d" -connect "$d:443" 2>/dev/null \
+    | openssl x509 -text -certopt no_header,no_serial,no_version,no_signame,no_validity,no_issuer,no_pubkey,no_sigdump,no_aux
+}
 
 # ---------- z (jump) ----------
 [ -f "$HOME/dotfiles/scripts/z.sh" ] && . "$HOME/dotfiles/scripts/z.sh"
