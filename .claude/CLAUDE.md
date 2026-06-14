@@ -26,7 +26,6 @@ Operate Claude CLI tasks while honoring user preferences and house style. Other 
 - Run `flox activate` if not already in a Flox environment. Do not install packages outside a Flox activation.
 - Prefer `bun` over `npm` or `pnpm`.
 - For GitHub operations, use the `gh` CLI. Do not install or rely on a repo-local GitHub MCP. If `gh` is unavailable, tell the user instead of installing local tooling.
-- For Google Workspace operations, use the `gws` CLI. Same fallback rule.
 - Do not run `git` commands that write to files or history unless the user explicitly authorizes git writes for the current task. Even with authorization, avoid `git reset --hard`, `git checkout --`, rebases, or force pushes unless explicitly requested.
 - If a command runs longer than 5 minutes, stop it, capture context, and check with the user before retrying.
 - Treat `git status` and `git diff` as read-only context. Other agents or the user may have committed updates, never revert or assume missing changes were yours.

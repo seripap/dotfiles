@@ -12,7 +12,6 @@
   f = fetch
   rb = rebase
   ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
-  dsf = "!f() { [ -z \"$GIT_PREFIX\" ] || cd \"$GIT_PREFIX\" && git diff --color \"$@\" | diff-so-fancy  | less --tabs=4 -RFX; }; f"
   tt = tag --sort v:refname
   ignore = update-index --assume-unchanged
   unignore = update-index --no-assume-unchanged
@@ -41,7 +40,7 @@
 [credential]
   helper = osxkeychain
 [core]
-  pager = diff-so-fancy | less --tabs=4 -RFX
+  pager = less -RFX
   excludesfile = /Users/dseripap/.gitignore
   editor = nvim
 [url "https://"]
@@ -75,8 +74,6 @@
 [diff]
   tool = nvimdiff
   external = difft
-[difftool "diff-so-fancy"]
-  cmd = "diff-so-fancy | less --tabs=4 -RFX"
 [url "git@github.com:"]
   insteadOf = https://github.com/
 [push]

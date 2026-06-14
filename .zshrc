@@ -80,6 +80,9 @@ fi
 command -v flox >/dev/null 2>&1 && eval "$(flox completions zsh 2>/dev/null)"
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
+# direnv — per-dir env via .envrc
+command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
+
 # ---------- Aliases ----------
 alias ll='ls -lhG'
 alias la='ls -lhAG'
@@ -202,6 +205,9 @@ _ask() {
 }
 
 # ---------- zsh plugins (must be near the bottom; syntax-highlighting goes LAST) ----------
+# Tame autosuggestions: skip long lines (rendering looks disconnected), history-only.
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=80
+ZSH_AUTOSUGGEST_STRATEGY=(history)
 if [ -n "$HOMEBREW_PREFIX" ]; then
   [ -f "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && \
     . "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"

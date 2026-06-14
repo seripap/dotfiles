@@ -11,14 +11,27 @@ brew "ripgrep"
 brew "the_silver_searcher"
 brew "bat"
 brew "jq"
+brew "yq"            # jq for YAML — pairs with k8s manifests
 
 # Diff
-brew "diff-so-fancy"
 brew "difftastic"
 
 # Editor
 brew "neovim"
 
+# Dev workflow
+brew "gh"            # GitHub CLI
+brew "direnv"        # per-dir env via .envrc (hook is wired in .zshrc)
+brew "mkcert"        # local TLS certs for dev
+brew "uv"            # Python packaging (per CLAUDE.md)
+brew "ruff"          # Python lint + format
+
+# Kubernetes
+brew "k9s"           # TUI dashboard
+brew "kubectx"       # ctx + ns switcher (includes kubens)
+brew "stern"         # multi-pod log tailing
+
 # Cloud / data
 brew "awscli"
+brew "aws-vault"     # secure AWS credential storage
 brew "gdal"
