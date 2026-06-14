@@ -4,6 +4,7 @@ brew "fzf"
 brew "coreutils"  # gstdbuf (line-buffered ask streaming), gtruncate, etc.
 brew "zsh-autosuggestions"     # ghost-text completion from history
 brew "zsh-syntax-highlighting" # commands turn green when valid, red when not
+brew "zoxide"                  # smarter cd — `z foo` jumps to most-used matching dir
 
 # Search / inspect
 brew "ripgrep"

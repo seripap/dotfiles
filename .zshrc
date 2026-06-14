@@ -114,8 +114,9 @@ getcertnames() {                                                       # dump CN
     | openssl x509 -text -certopt no_header,no_serial,no_version,no_signame,no_validity,no_issuer,no_pubkey,no_sigdump,no_aux
 }
 
-# ---------- z (jump) ----------
-[ -f "$HOME/dotfiles/scripts/z.sh" ] && . "$HOME/dotfiles/scripts/z.sh"
+# ---------- zoxide (smarter cd) ----------
+# `z foo` jumps to a directory matching `foo`; `zi` opens an interactive picker.
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 
 # ---------- fzf ----------
 if command -v fzf >/dev/null 2>&1; then

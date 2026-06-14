@@ -17,13 +17,12 @@ make install  # symlink dotfiles into $HOME
 
 | Path | Purpose |
 | --- | --- |
-| `.zshrc` | Shell config — PATH, history, aliases, fzf, pure prompt, z-jump, `ask` |
+| `.zshrc` | Shell config — PATH, history, aliases, fzf, pure prompt, zoxide, `ask` |
 | `.vimrc` | Neovim config — plugins via vim-plug, Go/JS/TS, oceanic-next |
 | `.gitconfig` | Git aliases, diff-so-fancy + difft, SSH commit signing |
 | `.gitignore` | Global gitignore (referenced by `.gitconfig`) |
 | `coc-settings.json` | coc.nvim language server settings |
 | `.claude/CLAUDE.md` | Claude Code agent profile (preferences, house style, workflow rules) |
-| `scripts/z.sh` | [rupa/z](https://github.com/rupa/z) directory jumper |
 | `bin/` | Personal scripts on `$PATH` |
 | `Brewfile` | Homebrew dependencies (`brew bundle`) |
 | `Makefile` | `install`, `uninstall`, `brew`, `test` targets |
