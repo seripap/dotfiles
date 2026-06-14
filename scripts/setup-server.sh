@@ -75,7 +75,20 @@ else
   warn "  https://docs.claude.com/en/docs/claude-code/overview  (then run 'claude' once to auth)"
 fi
 
-# 6. Reachability. Tailscale gives a stable name with no port-forwarding.
+# 6. xterm-ghostty terminfo — Ghostty's entry isn't in ncurses base, so when you
+# ssh in from a Ghostty laptop you get "missing terminal: xterm-ghostty" and
+# tmux refuses to start. Install the bundled snapshot into ~/.terminfo.
+if infocmp -x xterm-ghostty >/dev/null 2>&1; then
+  say "xterm-ghostty terminfo already installed"
+elif [ -f "$repo/terminfo/xterm-ghostty.src" ]; then
+  say "Installing xterm-ghostty terminfo"
+  tic -x -o "$HOME/.terminfo" "$repo/terminfo/xterm-ghostty.src" \
+    || warn "tic failed; ssh from Ghostty will hit 'missing terminal' errors"
+else
+  warn "no bundled terminfo at terminfo/xterm-ghostty.src — skipping"
+fi
+
+# 7. Reachability. Tailscale gives a stable name with no port-forwarding.
 say "Checking reachability"
 ts_host=""
 if command -v tailscale >/dev/null 2>&1; then
