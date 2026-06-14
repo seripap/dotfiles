@@ -1,7 +1,6 @@
 [user]
-	name = Daniel Seripap
+  name = Daniel Seripap
   email = daniel@seripap.com
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDHMcdc96AB/UoScegQPSaVmEghhZ+0RRsv7CZAwPmD
 [alias]
   co = checkout
   s = status -sb
@@ -15,8 +14,8 @@
   ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
   dsf = "!f() { [ -z \"$GIT_PREFIX\" ] || cd \"$GIT_PREFIX\" && git diff --color \"$@\" | diff-so-fancy  | less --tabs=4 -RFX; }; f"
   tt = tag --sort v:refname
-  ignore = update-index --assume-unchanged 
-  unignore = update-index --no-assume-unchanged 
+  ignore = update-index --assume-unchanged
+  unignore = update-index --no-assume-unchanged
 [color]
   branch = auto
   diff = auto
@@ -36,7 +35,6 @@
   untracked = cyan
 [credential]
   helper = osxkeychain
-  #helper = /usr/local/share/gcm-core/git-credential-manager
 [core]
   pager = diff-so-fancy | less --tabs=4 -RFX
   excludesfile = /Users/dseripap/.gitignore
@@ -50,18 +48,16 @@
   user = seripap
 [gpg]
   #program = gpg
-	format = ssh
-[gpg "ssh"]
-  program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+  format = ssh
 [commit]
 	gpgsign = false
 [ghi]
   token = !security find-internet-password -a seripap -s github.com -l 'ghi token' -w
 [mergetool]
   keepBackup = false
-[mergetool "smerge"]
-  cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
-    trustExitCode = true
+[mergetool "zed"]
+  cmd = zed --wait $MERGED
+  trustExitCode = true
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
@@ -73,17 +69,13 @@
     prompt = true
 [diff]
     tool = nvimdiff
-[difftool "nvimdiff"]
-    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[difftool "diff-so-fancy"]
+    cmd = "diff-so-fancy | less --tabs=4 -RFX"
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 [push]
   autoSetupRemote = true
 [diff]
   external = difft
-[gpg "ssh"]
-	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
-[commit]
-	gpgsign = false
 [push]
 	autoSetupRemote = true

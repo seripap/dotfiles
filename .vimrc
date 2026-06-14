@@ -25,7 +25,7 @@ Plug 'nvim-lualine/lualine.nvim'
 " yavascript
 Plug 'HerringtonDarkholme/yats.vim'
 
-Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'html'] }    
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'html'] }
 Plug 'leafgarland/typescript-vim'
 " Plug 'bigfish/vim-js-context-coloring'
 " Plug 'peitalin/vim-jsx-typescript'
@@ -136,9 +136,9 @@ set wildignore+=go/bin-vagrant                   " Go bin-vagrant files
 set wildignore+=*.pyc                            " Python byte code
 set wildignore+=*.orig                           " Merge resolution files
 set wildignore+=*/tmp/*,*.so,*.zip,*/node_modules/*,*/vendor/*
- 
+
 "" Search
-set noshowmode  
+set noshowmode
 set hlsearch
 set incsearch
 set ignorecase
@@ -226,7 +226,7 @@ nmap <leader>q :NERDTreeToggle<cr>
 
 "" GitGutter
 " highlight DiffAdd guibg=DraculaGreen
-" highlight DiffChange guibg=DraculaOrange 
+" highlight DiffChange guibg=DraculaOrange
 " highlight DiffDelete guibg=DraculaRed
 
 "" vim-test settings
@@ -308,7 +308,7 @@ let g:coverage_json_report_path = 'coverage/coverage-final.json'
 let g:coverage_sign_uncovered = '|'
 
 "" Do not display signs on covered lines
-let g:coverage_show_covered = 0 
+let g:coverage_show_covered = 0
 
 "" Display signs on uncovered lines
 let g:coverage_show_uncovered = 1
@@ -336,7 +336,7 @@ let g:airline_symbols.paste = '∥'
 let g:airline_symbols.maxlinenr = ' '
 let g:airline_symbols.colnr = "c."
 
-autocmd BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw  
+autocmd BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw
 
 "nmap <leader>i :CocCommand tsserver.organizeImports<cr>
 
