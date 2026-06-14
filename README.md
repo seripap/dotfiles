@@ -17,7 +17,7 @@ make install  # symlink dotfiles into $HOME
 
 | Path | Purpose |
 | --- | --- |
-| `.zshrc` | Shell config — PATH, history, aliases, fzf, pure prompt, zoxide, `ask` |
+| `.zshrc` | Shell config — PATH, history, aliases, fzf, pure prompt, zoxide, `ask`, `caf` |
 | `.vimrc` | Neovim config — plugins via vim-plug, Go/JS/TS, oceanic-next |
 | `.gitconfig` | Git aliases, difftastic as external diff, SSH commit signing |
 | `.gitignore` | Global gitignore (referenced by `.gitconfig`) |
@@ -63,6 +63,20 @@ ask-clean   # remove all session logs (current shell's log is reset to empty)
 ```
 
 Logs are also auto-removed when the shell exits cleanly, and a startup sweep reaps anything older than 1 day in case a shell crashed.
+
+## `caf` — keep the Mac awake
+
+Wraps macOS `caffeinate -di` in a backgrounded process with a pidfile, so the awake state survives the shell that started it. RPROMPT shows a yellow `caffinated` tag while active.
+
+```sh
+caf          # toggle (default)
+caf on       # start — prevents display + idle sleep
+caf off      # stop
+caf status   # report state
+uncaf        # alias for `caf off`
+```
+
+State lives in `$TMPDIR/caffeinate-$USER.pid`. Stale pidfiles (after reboot, force-kill) are auto-cleaned by `kill -0` checks.
 
 ## Secrets and per-machine config
 
