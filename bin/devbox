@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# devbox — connect to your always-on sandbox and run the ever-living commands.
+#
+# Everything runs inside a durable tmux session on the server, so long jobs
+# (claude, builds, tests) survive disconnects, laptop sleep, and a closed lid.
+#
+#   devbox                 attach to (or create) the durable session — interactive
+#   devbox run <cmd...>    launch <cmd> in its own tmux window, detached, runs forever
+#   devbox status          list the tmux sessions/windows currently on the server
+#   devbox ssh <args...>   raw ssh to the server (passthrough), no tmux
+#
+# Host: defaults to the ssh alias `devbox`. Override with DEVBOX_HOST, e.g.
+#   DEVBOX_HOST=otherbox devbox run "claude -p 'go fix the flaky test'"
+# Session name: override with DEVBOX_SESSION (default: main).
+
+set -euo pipefail
+
+host="${DEVBOX_HOST:-devbox}"
+session="${DEVBOX_SESSION:-main}"
+
+# Single-quote a string so it survives parsing by the remote login shell.
+# (ssh concatenates its args and re-parses them through $SHELL, so every layer
+#  needs its own quoting or commands with spaces/quotes get mangled.)
+sq() { printf "'%s'" "${1//\'/\'\\\'\'}"; }
+
+case "${1:-attach}" in
+  attach)
+    # -A: attach if it exists, else create. -t: we need a real tty.
+    exec ssh -t "$host" "tmux new-session -A -s $(sq "$session")"
+    ;;
+
+  run)
+    shift
+    [ "$#" -gt 0 ] || { echo "usage: devbox run <cmd...>" >&2; exit 1; }
+    cmd="$*"
+    win="${1%% *}"   # name the window after the command's first word
+    # `; exec \$SHELL` (expanded on the server) keeps the window open after the
+    # command exits, so the final output is still there when you attach.
+    inner="$cmd; exec \$SHELL"
+    ssh "$host" "tmux has-session -t $(sq "$session") 2>/dev/null \
+      || tmux new-session -d -s $(sq "$session"); \
+      tmux new-window -t $(sq "$session") -n $(sq "$win") $(sq "$inner")"
+    echo "started in $host:$session ($win). attach with: devbox"
+    ;;
+
+  status)
+    exec ssh "$host" "tmux list-windows -a 2>/dev/null || echo 'no tmux sessions'"
+    ;;
+
+  ssh)
+    shift
+    exec ssh -t "$host" "$@"
+    ;;
+
+  -h|--help|help)
+    sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+
+  *)
+    echo "devbox: unknown command '${1}' (try: attach, run, status, ssh, help)" >&2
+    exit 1
+    ;;
+esac

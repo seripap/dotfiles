@@ -23,6 +23,9 @@ make install  # symlink dotfiles into $HOME
 | `.gitignore` | Global gitignore (referenced by `.gitconfig`) |
 | `coc-settings.json` | coc.nvim language server settings |
 | `.claude/CLAUDE.md` | Claude Code agent profile (preferences, house style, workflow rules) |
+| `.ssh/config` | SSH defaults (ControlMaster, keepalive). Real hosts go in `~/.ssh/config.local` (gitignored). Zed remote dev + `devbox` inherit this |
+| `bin/devbox` | Client-side connector — run long-lived commands inside a durable tmux session on your sandbox |
+| `scripts/setup-server.sh` | Provisions a Mac into an always-on dev sandbox (run on the server) |
 | `bin/` | Personal scripts on `$PATH` |
 | `Brewfile` | Homebrew dependencies (`brew bundle`) — shell, search, diff, neovim, k8s (k9s/kubectx/stern), dev workflow (gh/direnv/uv/ruff), AWS, gdal |
 | `Makefile` | `install`, `uninstall`, `brew`, `test` targets |
@@ -77,6 +80,47 @@ uncaf        # alias for `caf off`
 ```
 
 State lives in `$TMPDIR/caffeinate-$USER.pid`. Stale pidfiles (after reboot, force-kill) are auto-cleaned by `kill -0` checks.
+
+## Remote development sandbox
+
+Run the ever-living commands (Claude agents, builds, tests) on an always-on Mac
+so they survive a closed lid, then reach them from any machine. Editing stays
+local; only the persistent work lives on the server.
+
+```
+  laptop / phone ──Tailscale/SSH──► sandbox Mac (never sleeps)
+   (open/close freely)               └─ tmux session: claude, builds, tests keep running
+```
+
+### On the server (the always-on Mac)
+
+```sh
+git clone https://github.com/seripap/dotfiles ~/dotfiles
+cd ~/dotfiles
+./scripts/setup-server.sh   # enables SSH, disables sleep, brew bundle, make install
+```
+
+It's idempotent. It enables Remote Login and `pmset` never-sleep (both need
+`sudo`; skip with `--no-remote-login` / `--no-sleep-config`), installs the
+toolchain (incl. tmux), links the dotfiles, and prints the exact
+`~/.ssh/config.local` block to paste on your laptop. Install Tailscale on the box
+for a stable name with no port-forwarding, and the `claude` CLI if you want to
+run agents there.
+
+### On the client (your laptop)
+
+Add the host to `~/.ssh/config.local` (the template in `~/.ssh/config` carries
+the ControlMaster + keepalive defaults), then:
+
+```sh
+devbox                              # land in the durable tmux session
+devbox run "claude -p 'go fix it'"  # fire-and-forget; keeps running if you close the lid
+devbox status                       # what's running on the server right now
+devbox ssh uptime                   # raw ssh passthrough
+```
+
+Override the target with `DEVBOX_HOST=otherbox devbox ...`. Zed remote dev
+(`zed ssh://devbox/path`) reuses the same `~/.ssh/config`, so no duplicate setup.
 
 ## Secrets and per-machine config
 

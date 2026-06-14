@@ -22,6 +22,9 @@ brew "difftastic"
 # Editor
 brew "neovim"
 
+# Remote dev sandbox
+brew "tmux"          # durable sessions on the server — `devbox` runs jobs inside one
+
 # Dev workflow
 brew "gh"            # GitHub CLI
 brew "direnv"        # per-dir env via .envrc (hook is wired in .zshrc)
