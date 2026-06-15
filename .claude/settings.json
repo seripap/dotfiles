@@ -1,6 +1,9 @@
 {
-  "theme": "dark",
   "permissions": {
-    "additionalDirectories": ["/tmp"]
-  }
+    "additionalDirectories": [
+      "/tmp"
+    ]
+  },
+  "theme": "dark",
+  "skipDangerousModePermissionPrompt": true
 }

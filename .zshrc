@@ -54,6 +54,15 @@ if [ -n "$CLAUDE_SCRIPT_ACTIVE" ] && [ -n "$CLAUDE_SESSION_LOG" ]; then
   add-zsh-hook precmd _claude_maybe_redact   # truncate first (using old offset)
   add-zsh-hook precmd _claude_save_offset    # then save offset for the next command
   add-zsh-hook preexec _claude_mark_redact
+
+  # Re-source Ghostty's shell integration. The `exec script $SHELL` above starts
+  # a fresh zsh that bypasses Ghostty's ZDOTDIR-based auto-injection, so OSC 7
+  # (cwd reporting) stops firing — which breaks new-tab/window cwd inheritance.
+  # The integration script is explicitly designed to be sourced manually.
+  if [ -n "$GHOSTTY_RESOURCES_DIR" ] \
+     && [ -r "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration" ]; then
+    source "$GHOSTTY_RESOURCES_DIR/shell-integration/zsh/ghostty-integration"
+  fi
 fi
 
 # ---------- PATH ----------
