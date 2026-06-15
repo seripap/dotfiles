@@ -1,6 +1,6 @@
 # dotfiles
 
-Dan's daily driver.
+Dan's daily driver. Optimized for macOS and agentic development.
 
 ## Install
 
@@ -114,6 +114,16 @@ devbox ssh uptime                   # raw ssh passthrough
 
 Override the target with `DEVBOX_HOST=otherbox devbox ...`. Zed remote dev
 (`zed ssh://devbox/path`) reuses the same `~/.ssh/config`, so no duplicate setup.
+
+## macOS Tahoe — native window tiling
+
+| Shortcut | Action |
+| --- | --- |
+| `Fn` + `Ctrl` + `F` | Fill (maximize, keeps menu bar + Dock visible) |
+| `Ctrl` + `Cmd` + `F` | True fullscreen (dedicated Space, hides everything) |
+| `Fn` + `Ctrl` + `←` / `→` / `↑` / `↓` | Snap to half |
+| `Fn` + `Ctrl` + `C` | Center |
+| `Fn` + `Ctrl` + `R` | Revert to original size |
 
 ## Secrets and per-machine config
 
