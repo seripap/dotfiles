@@ -6,7 +6,11 @@
 # Auto-record interactive sessions via script(1) so `ask` can read previous output.
 # - Set CLAUDE_NO_RECORD=1 to opt out for a specific shell.
 # - Prefix a command with a space to keep it out of the session log (mirrors HIST_IGNORE_SPACE).
+# - Skipped under Zed (TERM_PROGRAM=zed): script(1)'s PTY mangles Zed's terminal
+#   in ways the Ghostty integration below doesn't recover from — pure prompt's
+#   \r redraws render as literal ^M and tmux/TUIs inside `devbox` lose sizing.
 if [ -z "$CLAUDE_SCRIPT_ACTIVE" ] && [ -z "$CLAUDE_NO_RECORD" ] \
+   && [ "$TERM_PROGRAM" != "zed" ] \
    && [ -t 0 ] && [ -t 1 ] && command -v script >/dev/null 2>&1; then
   # Sweep stale logs from shells that didn't clean up (>1 day old)
   find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'claude_session_*.log' -mtime +1 -delete 2>/dev/null
