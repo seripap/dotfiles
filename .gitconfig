@@ -20,6 +20,8 @@
   dm = !git branch --merged | grep -v '\\*' | xargs -n1 git branch -d
   fc = !"f(){ git log --pretty=format:'%C(yellow)%h %Cgreen%ad %Creset%s' --date=short -S\"$1\"; }; f"
   alias = !git config -l | grep ^alias | cut -c 7- | sort
+  dft = !GIT_EXTERNAL_DIFF=difft git diff
+  shdft = !GIT_EXTERNAL_DIFF=difft git show
 [color]
   branch = auto
   diff = auto
@@ -73,7 +75,6 @@
   prompt = true
 [diff]
   tool = nvimdiff
-  external = difft
 [url "git@github.com:"]
   insteadOf = https://github.com/
 [push]
