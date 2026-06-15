@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# devbox-banner — printed once when `devbox` creates a fresh tmux session.
+# devbox-banner. Printed once when `devbox` creates a fresh tmux session.
 # Re-run anytime via the `devhelp` alias (defined in .zshrc).
 #
 # Two sections: live resource snapshot of THIS box, and a quick cheatsheet
@@ -17,7 +17,7 @@ bar() { printf "${DIM}%s${RESET}\n" "──────────────�
 h()   { printf "${BOLD}${CYAN}%s${RESET}\n" "$1"; }
 
 bar
-h "devbox session — $(hostname -s)"
+h "devbox session: $(hostname -s)"
 bar
 
 # `uptime` output looks like " 14:03  up 12 days, 4:23, 2 users, load averages: 0.45 0.62 0.71"

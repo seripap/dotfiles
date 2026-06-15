@@ -47,11 +47,33 @@ if [ "$do_login" = 1 ]; then
   fi
 fi
 
-# 2. Never sleep. A sleeping Mac kills your ever-living commands.
+# 2. Power management for headless server use. Only sensible on a dedicated,
+# plugged-in box. Skip with --no-sleep-config if this machine actually moves
+# around.
+#
+#   sleep 0          no idle system sleep
+#   disablesleep 1   lid-close doesn't trigger sleep either
+#   disksleep 0      keep disks spinning (no first-read latency hiccup)
+#   hibernatemode 0  no RAM-to-disk on sleep
+#   standby 0        no auto-standby (deep sleep after N hours)
+#   autorestart 1    power back on automatically after a power failure
+#   tcpkeepalive 1   keep TCP connections alive during dark wake
+#   womp 1           wake-on-magic-packet (LAN remote wake)
+#   powernap 1       handle network activity during dark wake
 if [ "$do_sleep" = 1 ]; then
-  say "Disabling sleep (sudo). Only sensible on a dedicated, plugged-in box."
+  say "Configuring power management for headless server use (sudo)"
   warn "skip with --no-sleep-config if this is a machine you actually carry around"
-  sudo pmset -a sleep 0 disablesleep 1 || warn "pmset failed — set 'Prevent sleeping' in System Settings > Energy"
+  sudo pmset -a \
+    sleep 0 \
+    disablesleep 1 \
+    disksleep 0 \
+    hibernatemode 0 \
+    standby 0 \
+    autorestart 1 \
+    tcpkeepalive 1 \
+    womp 1 \
+    powernap 1 \
+    || warn "pmset failed — set 'Prevent sleeping' in System Settings > Energy"
 fi
 
 # 3. Homebrew + the toolchain (includes tmux, which devbox needs).
@@ -75,7 +97,7 @@ else
   warn "  https://docs.claude.com/en/docs/claude-code/overview  (then run 'claude' once to auth)"
 fi
 
-# 6. xterm-ghostty terminfo — Ghostty's entry isn't in ncurses base, so when you
+# 6. xterm-ghostty terminfo. Ghostty's entry isn't in ncurses base, so when you
 # ssh in from a Ghostty laptop you get "missing terminal: xterm-ghostty" and
 # tmux refuses to start. Install the bundled snapshot into ~/.terminfo.
 if infocmp -x xterm-ghostty >/dev/null 2>&1; then
@@ -85,7 +107,7 @@ elif [ -f "$repo/terminfo/xterm-ghostty.src" ]; then
   tic -x -o "$HOME/.terminfo" "$repo/terminfo/xterm-ghostty.src" \
     || warn "tic failed; ssh from Ghostty will hit 'missing terminal' errors"
 else
-  warn "no bundled terminfo at terminfo/xterm-ghostty.src — skipping"
+  warn "no bundled terminfo at terminfo/xterm-ghostty.src, skipping"
 fi
 
 # 7. Reachability. Tailscale gives a stable name with no port-forwarding.

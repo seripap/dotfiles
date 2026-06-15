@@ -15,8 +15,7 @@
 #
 # Self-aware: if you're already on a remote (SSH_CONNECTION set, e.g. you
 # ssh'd in or you're in Zed's remote terminal), `devbox` skips the ssh layer
-# and talks to local tmux. Same verbs, same session — works from anywhere.
-# Force it either way with DEVBOX_LOCAL=1 / DEVBOX_LOCAL=0.
+# and talks to local tmux. Force either way with DEVBOX_LOCAL=1 / DEVBOX_LOCAL=0.
 
 set -euo pipefail
 
@@ -39,7 +38,7 @@ sq() { printf "'%s'" "${1//\'/\'\\\'\'}"; }
 
 # Wrap a remote command so it runs via a login shell on the server. ssh's
 # `host "cmd"` form runs a non-login, non-interactive shell, which on macOS
-# misses ~/.zprofile (where `brew shellenv` lives) — so anything from
+# misses ~/.zprofile (where `brew shellenv` lives), so anything from
 # /opt/homebrew/bin (tmux included) won't be on PATH. `zsh -lc` fixes that.
 login_sh() { printf 'zsh -lc %s' "$(sq "$1")"; }
 
