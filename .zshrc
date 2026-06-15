@@ -272,11 +272,13 @@ _ask() {
   local linebuf=()
   command -v gstdbuf >/dev/null 2>&1 && linebuf=(gstdbuf -oL)
 
-  # Run claude in background, writing to tmpfile so we can both spin AND stream
+  # Run claude in background, writing to tmpfile so we can both spin AND stream.
+  # `env -u ANTHROPIC_API_KEY` drops any externally-injected key (e.g. fs-global
+  # flox sources one from 1Password) so claude falls back to subscription auth.
   { tail -n "$lines" "$CLAUDE_SESSION_LOG" \
       | sed -E $'s/\x1b\\[[0-9;?]*[a-zA-Z]//g; s/\r$//' \
       | sed '$d' \
-      | $linebuf claude -p "$*" >"$tmpout" 2>&1 ; } &
+      | $linebuf env -u ANTHROPIC_API_KEY claude -p "$*" >"$tmpout" 2>&1 ; } &
   local pid=$!
 
   # Phase 1: braille spinner while we wait for claude's first byte
