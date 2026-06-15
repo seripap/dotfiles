@@ -128,6 +128,7 @@ alias flush='dscacheutil -flushcache && killall -HUP mDNSResponder'    # macOS D
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 alias week='date +%V'                                                  # ISO week number
 alias serve='python3 -m http.server'
+alias devhelp='~/dotfiles/bin/devbox-banner'                            # re-show devbox cheatsheet + resource snapshot
 
 # ---------- Functions ----------
 mkd() { mkdir -p "$@" && cd "$_" || return; }

@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# devbox-banner — printed once when `devbox` creates a fresh tmux session.
+# Re-run anytime via the `devhelp` alias (defined in .zshrc).
+#
+# Two sections: live resource snapshot of THIS box, and a quick cheatsheet
+# for tmux + devbox + the per-shell helpers.
+
+set -euo pipefail
+
+if [ -t 1 ]; then
+  BOLD=$'\033[1m'; DIM=$'\033[2m'; CYAN=$'\033[36m'; RESET=$'\033[0m'
+else
+  BOLD=''; DIM=''; CYAN=''; RESET=''
+fi
+
+bar() { printf "${DIM}%s${RESET}\n" "──────────────────────────────────────────────────────────────"; }
+h()   { printf "${BOLD}${CYAN}%s${RESET}\n" "$1"; }
+
+bar
+h "devbox session — $(hostname -s)"
+bar
+
+# `uptime` output looks like " 14:03  up 12 days, 4:23, 2 users, load averages: 0.45 0.62 0.71"
+ut="$(uptime)"
+up="$(printf '%s' "$ut" | sed -E 's/^[[:space:]]*[0-9:]+[[:space:]]+up[[:space:]]+//; s/,[[:space:]]+[0-9]+[[:space:]]+user.*//')"
+load="$(printf '%s' "$ut" | sed -E 's/.*load averages?:[[:space:]]+//')"
+
+printf "  ${BOLD}up${RESET}      %s\n" "$up"
+printf "  ${BOLD}load${RESET}    %s\n" "$load"
+
+# macOS: pull PhysMem line from top. -n 0 skips the per-process list.
+if [ "$(uname -s)" = "Darwin" ]; then
+  mem="$(top -l 1 -n 0 -s 0 2>/dev/null | awk '/^PhysMem:/ {sub(/^PhysMem:[[:space:]]*/,""); print; exit}')"
+  [ -n "$mem" ] && printf "  ${BOLD}mem${RESET}     %s\n" "$mem"
+fi
+
+# Root filesystem usage.
+df -h / | awk 'NR==2 {printf "  '"${BOLD}"'disk'"${RESET}"'    %s used of %s (%s full)\n", $3, $2, $5}'
+
+bar
+h "tmux"
+cat <<'EOF'
+  C-b d         detach (session keeps running on the server)
+  C-b c         new window
+  C-b n / p     next / prev window
+  C-b 0..9      jump to window N
+  C-b w         pick a window from the list
+  C-b ,         rename current window
+  C-b %         split pane vertically  (side-by-side)
+  C-b "         split pane horizontally (top/bottom)
+  C-b o         next pane
+  C-b z         zoom current pane (toggle)
+  C-b [         scrollback / copy mode  (q to exit)
+  C-b ?         show all tmux bindings
+EOF
+
+bar
+h "devbox  (works from laptop OR from here)"
+cat <<'EOF'
+  devbox             attach this session ("main")
+  devbox run "cmd"   fire a detached job in its own window
+  devbox status      list windows on this box
+  devhelp            re-show this banner
+EOF
+
+bar
+h "handy"
+cat <<'EOF'
+  ask <question>     claude over recent terminal output
+EOF
+bar

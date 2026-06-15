@@ -45,11 +45,14 @@ login_sh() { printf 'zsh -lc %s' "$(sq "$1")"; }
 
 case "${1:-attach}" in
   attach)
+    # Initial command for window 0 of a NEW session (re-attach skips it).
+    # `\$HOME` / `\$SHELL` stay literal locally so they expand server-side.
+    initial="\$HOME/dotfiles/bin/devbox-banner; exec \$SHELL"
     if [ "$local_mode" = 1 ]; then
-      exec tmux new-session -A -s "$session"
+      exec tmux new-session -A -s "$session" "$initial"
     fi
     # -A: attach if it exists, else create. -t: we need a real tty.
-    exec ssh -t "$host" "$(login_sh "tmux new-session -A -s $(sq "$session")")"
+    exec ssh -t "$host" "$(login_sh "tmux new-session -A -s $(sq "$session") $(sq "$initial")")"
     ;;
 
   run)
