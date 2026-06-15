@@ -267,15 +267,17 @@ ask-clean() {
   echo "ask-clean: removed $count session log(s)"
 }
 
-# `claude` — bypass script(1) for interactive Claude Code sessions. BSD script
-# on macOS garbles the cursor-positioning sequences Ink uses to redraw the
-# @-mention picker, which makes the prompt area visibly shift on every keystroke.
-# Routing stdio to the original Ghostty TTY (captured pre-script) sidesteps it.
-# Pipes and one-shot `claude -p` fall through to the normal path so `ask` and
-# other automation keep working. Interactive sessions are NOT recorded.
+# `claude` — bypass script(1)'s OUTPUT path for interactive Claude Code sessions.
+# BSD script on macOS garbles the cursor-positioning sequences Ink uses to redraw
+# the @-mention picker, making the prompt area visibly shift on every keystroke.
+# Routing stdout/stderr to the original Ghostty TTY sidesteps the mangling. Stdin
+# stays on the script PTY so keystrokes still flow through normally — redirecting
+# stdin too would race script(1)'s own TTY reader and break typing.
+# Pipes and one-shot `claude -p` fall through so `ask` and automation keep working.
+# Interactive session output is NOT recorded to CLAUDE_SESSION_LOG.
 claude() {
-  if [ -n "$CLAUDE_ORIG_TTY" ] && [ -e "$CLAUDE_ORIG_TTY" ] && [ -t 0 ] && [ -t 1 ]; then
-    command claude "$@" <"$CLAUDE_ORIG_TTY" >"$CLAUDE_ORIG_TTY" 2>"$CLAUDE_ORIG_TTY"
+  if [ -n "$CLAUDE_ORIG_TTY" ] && [ -e "$CLAUDE_ORIG_TTY" ] && [ -t 1 ]; then
+    command claude "$@" >"$CLAUDE_ORIG_TTY" 2>"$CLAUDE_ORIG_TTY"
   else
     command claude "$@"
   fi
