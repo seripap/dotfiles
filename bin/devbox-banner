@@ -2,8 +2,10 @@
 # devbox-banner. Printed once when `devbox` creates a fresh tmux session.
 # Re-run anytime via the `devhelp` alias (defined in .zshrc).
 #
-# Two sections: live resource snapshot of THIS box, and a quick cheatsheet
-# for tmux + devbox + the per-shell helpers.
+# Subcommands:
+#   devbox-banner            full banner: stats + cheatsheet
+#   devbox-banner stats      resource snapshot only (used by `devbox stats`)
+#   devbox-banner help       cheatsheet only
 
 set -euo pipefail
 
@@ -16,30 +18,35 @@ fi
 bar() { printf "${DIM}%s${RESET}\n" "──────────────────────────────────────────────────────────────"; }
 h()   { printf "${BOLD}${CYAN}%s${RESET}\n" "$1"; }
 
-bar
-h "devbox session: $(hostname -s)"
-bar
+print_stats() {
+  bar
+  h "devbox session: $(hostname -s)"
+  bar
 
-# `uptime` output looks like " 14:03  up 12 days, 4:23, 2 users, load averages: 0.45 0.62 0.71"
-ut="$(uptime)"
-up="$(printf '%s' "$ut" | sed -E 's/^[[:space:]]*[0-9:]+[[:space:]]+up[[:space:]]+//; s/,[[:space:]]+[0-9]+[[:space:]]+user.*//')"
-load="$(printf '%s' "$ut" | sed -E 's/.*load averages?:[[:space:]]+//')"
+  # `uptime` output looks like " 14:03  up 12 days, 4:23, 2 users, load averages: 0.45 0.62 0.71"
+  local ut up load
+  ut="$(uptime)"
+  up="$(printf '%s' "$ut" | sed -E 's/^[[:space:]]*[0-9:]+[[:space:]]+up[[:space:]]+//; s/,[[:space:]]+[0-9]+[[:space:]]+user.*//')"
+  load="$(printf '%s' "$ut" | sed -E 's/.*load averages?:[[:space:]]+//')"
 
-printf "  ${BOLD}up${RESET}      %s\n" "$up"
-printf "  ${BOLD}load${RESET}    %s\n" "$load"
+  printf "  ${BOLD}up${RESET}      %s\n" "$up"
+  printf "  ${BOLD}load${RESET}    %s\n" "$load"
 
-# macOS: pull PhysMem line from top. -n 0 skips the per-process list.
-if [ "$(uname -s)" = "Darwin" ]; then
-  mem="$(top -l 1 -n 0 -s 0 2>/dev/null | awk '/^PhysMem:/ {sub(/^PhysMem:[[:space:]]*/,""); print; exit}')"
-  [ -n "$mem" ] && printf "  ${BOLD}mem${RESET}     %s\n" "$mem"
-fi
+  # macOS: pull PhysMem line from top. -n 0 skips the per-process list.
+  if [ "$(uname -s)" = "Darwin" ]; then
+    local mem
+    mem="$(top -l 1 -n 0 -s 0 2>/dev/null | awk '/^PhysMem:/ {sub(/^PhysMem:[[:space:]]*/,""); print; exit}')"
+    [ -n "$mem" ] && printf "  ${BOLD}mem${RESET}     %s\n" "$mem"
+  fi
 
-# Root filesystem usage.
-df -h / | awk 'NR==2 {printf "  '"${BOLD}"'disk'"${RESET}"'    %s used of %s (%s full)\n", $3, $2, $5}'
+  # Root filesystem usage.
+  df -h / | awk 'NR==2 {printf "  '"${BOLD}"'disk'"${RESET}"'    %s used of %s (%s full)\n", $3, $2, $5}'
+  bar
+}
 
-bar
-h "tmux"
-cat <<'EOF'
+print_cheatsheet() {
+  h "tmux"
+  cat <<'EOF'
   C-b d         detach (session keeps running on the server)
   C-b c         new window
   C-b n / p     next / prev window
@@ -54,18 +61,38 @@ cat <<'EOF'
   C-b ?         show all tmux bindings
 EOF
 
-bar
-h "devbox  (works from laptop OR from here)"
-cat <<'EOF'
+  bar
+  h "devbox  (works from laptop OR from here)"
+  cat <<'EOF'
   devbox             attach this session ("main")
   devbox run "cmd"   fire a detached job in its own window
   devbox status      list windows on this box
+  devbox stats       resource snapshot (up / load / mem / disk)
   devhelp            re-show this banner
 EOF
 
-bar
-h "handy"
-cat <<'EOF'
+  bar
+  h "handy"
+  cat <<'EOF'
   ask <question>     claude over recent terminal output
 EOF
-bar
+  bar
+}
+
+case "${1:-banner}" in
+  stats)
+    print_stats
+    ;;
+  help|cheatsheet)
+    bar
+    print_cheatsheet
+    ;;
+  banner|"")
+    print_stats
+    print_cheatsheet
+    ;;
+  *)
+    echo "devbox-banner: unknown subcommand '$1' (try: stats, help, banner)" >&2
+    exit 1
+    ;;
+esac

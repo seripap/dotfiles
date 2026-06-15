@@ -4,9 +4,10 @@
 # Everything runs inside a durable tmux session on the server, so long jobs
 # (claude, builds, tests) survive disconnects, laptop sleep, and a closed lid.
 #
-#   devbox                 attach to (or create) the durable session — interactive
+#   devbox                 attach to (or create) the durable session, interactive
 #   devbox run <cmd...>    launch <cmd> in its own tmux window, detached, runs forever
 #   devbox status          list the tmux sessions/windows currently on the server
+#   devbox stats           resource snapshot of the server (up / load / mem / disk)
 #   devbox ssh <args...>   raw ssh to the server (passthrough), no tmux
 #
 # Host: defaults to the ssh alias `devbox`. Override with DEVBOX_HOST, e.g.
@@ -86,6 +87,13 @@ case "${1:-attach}" in
     exec ssh "$host" "$(login_sh "tmux list-windows -a 2>/dev/null || echo 'no tmux sessions'")"
     ;;
 
+  stats)
+    if [ "$local_mode" = 1 ]; then
+      exec "$HOME/dotfiles/bin/devbox-banner" stats
+    fi
+    exec ssh "$host" "$(login_sh "\$HOME/dotfiles/bin/devbox-banner stats")"
+    ;;
+
   ssh)
     shift
     if [ "$local_mode" = 1 ]; then
@@ -101,7 +109,7 @@ case "${1:-attach}" in
     ;;
 
   *)
-    echo "devbox: unknown command '${1}' (try: attach, run, status, ssh, help)" >&2
+    echo "devbox: unknown command '${1}' (try: attach, run, status, stats, ssh, help)" >&2
     exit 1
     ;;
 esac
