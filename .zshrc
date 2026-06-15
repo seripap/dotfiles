@@ -11,6 +11,10 @@ if [ -z "$CLAUDE_SCRIPT_ACTIVE" ] && [ -z "$CLAUDE_NO_RECORD" ] \
   # Sweep stale logs from shells that didn't clean up (>1 day old)
   find "${TMPDIR:-/tmp}" -maxdepth 1 -name 'claude_session_*.log' -mtime +1 -delete 2>/dev/null
   export CLAUDE_SCRIPT_ACTIVE=1
+  # Captured BEFORE script(1) takes the PTY, so `claude` (and any other TUI that
+  # gets mangled by BSD script's PTY proxy) can redirect stdio straight to the
+  # real Ghostty TTY and bypass the recording layer.
+  export CLAUDE_ORIG_TTY="$(tty 2>/dev/null || true)"
   export CLAUDE_SESSION_LOG="${TMPDIR:-/tmp}/claude_session_$$.log"
   # PID of the shell that *owns* the log — only this shell deletes on EXIT.
   # Sub-shells (flox activate, turbo dev, direnv, ...) inherit CLAUDE_SESSION_LOG
@@ -261,6 +265,20 @@ ask-clean() {
   find "$dir" -maxdepth 1 -name 'claude_session_*.log' -delete 2>/dev/null
   [ -n "$CLAUDE_SESSION_LOG" ] && : > "$CLAUDE_SESSION_LOG"
   echo "ask-clean: removed $count session log(s)"
+}
+
+# `claude` — bypass script(1) for interactive Claude Code sessions. BSD script
+# on macOS garbles the cursor-positioning sequences Ink uses to redraw the
+# @-mention picker, which makes the prompt area visibly shift on every keystroke.
+# Routing stdio to the original Ghostty TTY (captured pre-script) sidesteps it.
+# Pipes and one-shot `claude -p` fall through to the normal path so `ask` and
+# other automation keep working. Interactive sessions are NOT recorded.
+claude() {
+  if [ -n "$CLAUDE_ORIG_TTY" ] && [ -e "$CLAUDE_ORIG_TTY" ] && [ -t 0 ] && [ -t 1 ]; then
+    command claude "$@" <"$CLAUDE_ORIG_TTY" >"$CLAUDE_ORIG_TTY" 2>"$CLAUDE_ORIG_TTY"
+  else
+    command claude "$@"
+  fi
 }
 
 # Allow unquoted prompts like `ask how many files?` — disables glob expansion of ?, *, [...]

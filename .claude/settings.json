@@ -4,6 +4,14 @@
       "/tmp"
     ]
   },
+  "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
-  "skipDangerousModePermissionPrompt": true
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  }
 }
