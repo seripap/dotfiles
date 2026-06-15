@@ -320,5 +320,3 @@ fi
 
 # ---------- Per-machine extras ----------
 [ -f "$HOME/.extra" ] && . "$HOME/.extra"
-
-source ~/local/fs-global/scripts/fsdev.sh
