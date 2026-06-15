@@ -12,11 +12,25 @@
 # Host: defaults to the ssh alias `devbox`. Override with DEVBOX_HOST, e.g.
 #   DEVBOX_HOST=otherbox devbox run "claude -p 'go fix the flaky test'"
 # Session name: override with DEVBOX_SESSION (default: main).
+#
+# Self-aware: if you're already on a remote (SSH_CONNECTION set, e.g. you
+# ssh'd in or you're in Zed's remote terminal), `devbox` skips the ssh layer
+# and talks to local tmux. Same verbs, same session — works from anywhere.
+# Force it either way with DEVBOX_LOCAL=1 / DEVBOX_LOCAL=0.
 
 set -euo pipefail
 
 host="${DEVBOX_HOST:-devbox}"
 session="${DEVBOX_SESSION:-main}"
+
+# Local mode: are we already on the target? If so, skip ssh entirely.
+if [ -n "${DEVBOX_LOCAL:-}" ]; then
+  local_mode="$DEVBOX_LOCAL"
+elif [ -n "${SSH_CONNECTION:-}" ]; then
+  local_mode=1
+else
+  local_mode=0
+fi
 
 # Single-quote a string so it survives parsing by the remote login shell.
 # (ssh concatenates its args and re-parses them through $SHELL, so every layer
@@ -31,6 +45,9 @@ login_sh() { printf 'zsh -lc %s' "$(sq "$1")"; }
 
 case "${1:-attach}" in
   attach)
+    if [ "$local_mode" = 1 ]; then
+      exec tmux new-session -A -s "$session"
+    fi
     # -A: attach if it exists, else create. -t: we need a real tty.
     exec ssh -t "$host" "$(login_sh "tmux new-session -A -s $(sq "$session")")"
     ;;
@@ -40,22 +57,40 @@ case "${1:-attach}" in
     [ "$#" -gt 0 ] || { echo "usage: devbox run <cmd...>" >&2; exit 1; }
     cmd="$*"
     win="${1%% *}"   # name the window after the command's first word
-    # `; exec \$SHELL` (expanded on the server) keeps the window open after the
-    # command exits, so the final output is still there when you attach.
-    inner="$cmd; exec \$SHELL"
-    remote="tmux has-session -t $(sq "$session") 2>/dev/null \
-      || tmux new-session -d -s $(sq "$session"); \
-      tmux new-window -t $(sq "$session") -n $(sq "$win") $(sq "$inner")"
-    ssh "$host" "$(login_sh "$remote")"
-    echo "started in $host:$session ($win). attach with: devbox"
+    # `; exec $SHELL` keeps the window open after the command exits, so the
+    # final output is still there when you attach.
+    if [ "$local_mode" = 1 ]; then
+      inner="$cmd; exec \$SHELL"
+      tmux has-session -t "$session" 2>/dev/null \
+        || tmux new-session -d -s "$session"
+      tmux new-window -t "$session" -n "$win" "$inner"
+      echo "started in $session ($win). attach with: devbox"
+    else
+      # `\$SHELL` (escaped) is expanded on the server, not locally.
+      inner="$cmd; exec \$SHELL"
+      remote="tmux has-session -t $(sq "$session") 2>/dev/null \
+        || tmux new-session -d -s $(sq "$session"); \
+        tmux new-window -t $(sq "$session") -n $(sq "$win") $(sq "$inner")"
+      ssh "$host" "$(login_sh "$remote")"
+      echo "started in $host:$session ($win). attach with: devbox"
+    fi
     ;;
 
   status)
+    if [ "$local_mode" = 1 ]; then
+      tmux list-windows -a 2>/dev/null || echo "no tmux sessions"
+      exit 0
+    fi
     exec ssh "$host" "$(login_sh "tmux list-windows -a 2>/dev/null || echo 'no tmux sessions'")"
     ;;
 
   ssh)
     shift
+    if [ "$local_mode" = 1 ]; then
+      # Already on the box; `devbox ssh foo` makes little sense, but be useful.
+      [ "$#" -eq 0 ] && exec "${SHELL:-/bin/zsh}"
+      exec "$@"
+    fi
     exec ssh -t "$host" "$@"
     ;;
 

@@ -83,6 +83,8 @@ State lives in `$TMPDIR/caffeinate-$USER.pid`. Stale pidfiles (after reboot, for
 
 ## Remote development sandbox
 
+See [REMOTE.md](REMOTE.md) for the architecture diagram.
+
 ### On the server 
 
 ```sh
