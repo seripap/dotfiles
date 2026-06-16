@@ -31,7 +31,7 @@ brew "direnv"        # per-dir env via .envrc (hook is wired in .zshrc)
 brew "mkcert"        # local TLS certs for dev
 brew "uv"            # Python packaging (per CLAUDE.md)
 brew "ruff"          # Python lint + format
-brew "oven-sh/bun/bun"  # JS runtime used by devbox-playwright (and preferred over npm/pnpm per CLAUDE.md)
+brew "bun"           # JS runtime used by devbox-playwright (and preferred over npm/pnpm per CLAUDE.md)
 
 # Kubernetes
 brew "k9s"           # TUI dashboard
