@@ -36,6 +36,7 @@ brew "ruff"          # Python lint + format
 brew "k9s"           # TUI dashboard
 brew "kubectx"       # ctx + ns switcher (includes kubens)
 brew "stern"         # multi-pod log tailing
+brew "helm"          # k8s package manager
 
 # Cloud / data
 brew "awscli"
