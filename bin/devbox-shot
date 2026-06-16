@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+# devbox-shot — drive the devbox-playwright server from the laptop to screenshot or probe URLs.
+#
+#   devbox-shot shot <url> [out.png]      take a screenshot, print its path
+#   devbox-shot check <url>               navigate and return JSON: status, title, console errors
+#
+# Auto-starts the remote server + ssh tunnel if not already running.
+# Output dir defaults to $TMPDIR; pass an explicit path to override.
+#
+# Env:
+#   DEVBOX_PW_PORT          port on both sides (default: 5544)
+#   DEVBOX_SHOT_VIEWPORT    e.g. 1440x900 (default: 1280x800)
+#   DEVBOX_SHOT_WAIT        playwright waitUntil: load | domcontentloaded | networkidle (default: networkidle)
+#   DEVBOX_SHOT_TIMEOUT_MS  navigation timeout (default: 30000)
+
+set -euo pipefail
+
+here="$(cd "$(dirname "$0")" && pwd)"
+port="${DEVBOX_PW_PORT:-5544}"
+endpoint="ws://127.0.0.1:${port}/pw"
+client_dir="$HOME/.devbox-playwright-client"
+
+ensure_server() {
+  # Cheap probe — if the tunnel + remote server are healthy, the ws port answers.
+  if ! nc -z 127.0.0.1 "$port" 2>/dev/null; then
+    echo "==> playwright server not reachable, starting…" >&2
+    "$here/devbox-playwright" start >&2
+  fi
+}
+
+ensure_client() {
+  # playwright-core is the protocol client without browser binaries — much lighter
+  # than full playwright since the browser lives on the devbox.
+  if [ ! -f "$client_dir/package.json" ]; then
+    mkdir -p "$client_dir"
+    cd "$client_dir"
+    printf '{"name":"devbox-shot-client","private":true,"type":"module"}\n' > package.json
+    bun add playwright-core >/dev/null 2>&1
+  fi
+}
+
+run_node() {
+  # Run a JS snippet with the client deps on path. Bun reads stdin as a module
+  # when fed via `bun run -` (we use a tempfile instead for clearer errors).
+  local script="$1"
+  local tmp
+  tmp=$(mktemp -t devbox-shot.XXXXXX.mjs)
+  printf '%s' "$script" > "$tmp"
+  (cd "$client_dir" && bun run "$tmp")
+  local rc=$?
+  rm -f "$tmp"
+  return $rc
+}
+
+case "${1:-}" in
+  shot)
+    shift
+    url="${1:-}"
+    [ -n "$url" ] || { echo "usage: devbox-shot shot <url> [out.png]" >&2; exit 1; }
+    out="${2:-${TMPDIR:-/tmp}/devbox-shot-$(date +%s).png}"
+    ensure_server
+    ensure_client
+
+    viewport="${DEVBOX_SHOT_VIEWPORT:-1280x800}"
+    vw="${viewport%x*}"; vh="${viewport#*x}"
+    waitUntil="${DEVBOX_SHOT_WAIT:-networkidle}"
+    timeout="${DEVBOX_SHOT_TIMEOUT_MS:-30000}"
+
+    run_node "
+import { chromium } from 'playwright-core';
+const browser = await chromium.connect('${endpoint}');
+const ctx = await browser.newContext({ viewport: { width: ${vw}, height: ${vh} } });
+const page = await ctx.newPage();
+try {
+  await page.goto('${url}', { waitUntil: '${waitUntil}', timeout: ${timeout} });
+  await page.screenshot({ path: '${out}', fullPage: true });
+} finally {
+  await ctx.close();
+  await browser.close();
+}
+console.error('saved:', '${out}');
+"
+    echo "$out"
+    ;;
+
+  check)
+    shift
+    url="${1:-}"
+    [ -n "$url" ] || { echo "usage: devbox-shot check <url>" >&2; exit 1; }
+    ensure_server
+    ensure_client
+
+    waitUntil="${DEVBOX_SHOT_WAIT:-networkidle}"
+    timeout="${DEVBOX_SHOT_TIMEOUT_MS:-30000}"
+
+    run_node "
+import { chromium } from 'playwright-core';
+const browser = await chromium.connect('${endpoint}');
+const ctx = await browser.newContext();
+const page = await ctx.newPage();
+const errors = [], pageerrors = [], requests = [];
+page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+page.on('pageerror', e => pageerrors.push(String(e)));
+page.on('requestfailed', r => requests.push({ url: r.url(), failure: r.failure()?.errorText }));
+let status = null, title = null, finalUrl = null, err = null;
+try {
+  const resp = await page.goto('${url}', { waitUntil: '${waitUntil}', timeout: ${timeout} });
+  status = resp ? resp.status() : null;
+  title = await page.title();
+  finalUrl = page.url();
+} catch (e) { err = String(e); }
+await ctx.close();
+await browser.close();
+process.stdout.write(JSON.stringify({ url: '${url}', finalUrl, status, title, consoleErrors: errors, pageErrors: pageerrors, failedRequests: requests, navError: err }, null, 2));
+"
+    ;;
+
+  -h|--help|help|'')
+    sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+
+  *)
+    echo "devbox-shot: unknown command '${1}' (try: shot, check, help)" >&2
+    exit 1
+    ;;
+esac

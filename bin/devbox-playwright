@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+# devbox-playwright — run a Playwright browser server on the devbox, drive it from your laptop.
+#
+# Browser executes on the devbox, your test code stays local and connects over a
+# WebSocket forwarded through ssh. Survives disconnects (lives in tmux).
+#
+#   devbox-playwright start     install (if needed), launch server on devbox, open ssh tunnel
+#   devbox-playwright stop      kill the tmux window + close the tunnel
+#   devbox-playwright status    show server window + tunnel state
+#   devbox-playwright endpoint  print the wsEndpoint to feed chromium.connect()
+#
+# Env:
+#   DEVBOX_HOST            ssh alias of the devbox (default: devbox)
+#   DEVBOX_PW_PORT         port on both sides (default: 5544)
+#   DEVBOX_PW_BROWSER      chromium | firefox | webkit (default: chromium)
+#
+# Client usage:
+#   import { chromium } from 'playwright';
+#   const browser = await chromium.connect(process.env.PW_WS_ENDPOINT);
+
+set -euo pipefail
+
+host="${DEVBOX_HOST:-devbox}"
+port="${DEVBOX_PW_PORT:-5544}"
+browser="${DEVBOX_PW_BROWSER:-chromium}"
+session="${DEVBOX_SESSION:-main}"
+win="playwright"
+remote_dir="\$HOME/.devbox-playwright"
+ws_path="/pw"
+endpoint="ws://127.0.0.1:${port}${ws_path}"
+tunnel_pidfile="${TMPDIR:-/tmp}/devbox-playwright-${host}-${port}.pid"
+
+sq() { printf "'%s'" "${1//\'/\'\\\'\'}"; }
+login_sh() { printf 'zsh -lc %s' "$(sq "$1")"; }
+
+ensure_remote_install() {
+  # Idempotent: only installs if package.json is missing, only downloads
+  # browser binaries if not already cached by Playwright.
+  local script
+  script="set -e
+    mkdir -p ${remote_dir}
+    cd ${remote_dir}
+    if [ ! -f package.json ]; then
+      printf '{\"name\":\"devbox-playwright\",\"private\":true,\"type\":\"module\"}\n' > package.json
+      bun add playwright
+    fi
+    bunx playwright install ${browser}"
+  ssh "$host" "$(login_sh "$script")"
+}
+
+write_server_script() {
+  # Writes the launchServer harness to the devbox. Kept on the box so we can
+  # `bun run` it from inside the tmux window without quoting a multi-line JS
+  # through three layers of shell.
+  local js
+  js='import { '"$browser"' as browserType } from "playwright";
+const port = Number(process.env.PORT) || 5544;
+const wsPath = process.env.WS_PATH || "/pw";
+const server = await browserType.launchServer({ port, wsPath });
+console.log("wsEndpoint:", server.wsEndpoint());
+process.on("SIGINT",  () => server.close().then(() => process.exit(0)));
+process.on("SIGTERM", () => server.close().then(() => process.exit(0)));'
+  ssh "$host" "$(login_sh "cat > ${remote_dir}/server.mjs")" <<<"$js"
+}
+
+tunnel_up() {
+  # ControlMaster from ~/.ssh/config makes this cheap. -fN: background, no command.
+  if [ -f "$tunnel_pidfile" ] && kill -0 "$(cat "$tunnel_pidfile")" 2>/dev/null; then
+    return 0
+  fi
+  ssh -fN -L "${port}:127.0.0.1:${port}" "$host"
+  # ssh -f forks; grab the child via lsof on the local port.
+  pid=$(lsof -tiTCP:"${port}" -sTCP:LISTEN 2>/dev/null | head -1 || true)
+  [ -n "$pid" ] && echo "$pid" > "$tunnel_pidfile"
+}
+
+tunnel_down() {
+  if [ -f "$tunnel_pidfile" ]; then
+    pid=$(cat "$tunnel_pidfile")
+    kill "$pid" 2>/dev/null || true
+    rm -f "$tunnel_pidfile"
+  fi
+}
+
+case "${1:-start}" in
+  start)
+    echo "==> ensuring playwright is installed on $host"
+    ensure_remote_install
+    write_server_script
+
+    echo "==> launching $browser server in tmux ($session:$win)"
+    # Reuse devbox's tmux conventions. If the window already exists, don't double-launch.
+    check="tmux has-session -t $(sq "$session") 2>/dev/null && \
+           tmux list-windows -t $(sq "$session") -F '#W' | grep -qx $(sq "$win")"
+    if ssh "$host" "$(login_sh "$check")"; then
+      echo "    already running (window '$win' exists in session '$session')"
+    else
+      cmd="cd ${remote_dir} && PORT=${port} WS_PATH=${ws_path} bun run server.mjs; exec \$SHELL"
+      remote="tmux has-session -t $(sq "$session") 2>/dev/null || tmux new-session -d -s $(sq "$session"); \
+              tmux new-window -t $(sq "$session") -n $(sq "$win") $(sq "$cmd")"
+      ssh "$host" "$(login_sh "$remote")"
+    fi
+
+    echo "==> opening ssh tunnel localhost:${port} -> ${host}:${port}"
+    tunnel_up
+
+    echo
+    echo "wsEndpoint: ${endpoint}"
+    echo
+    echo "use in tests:"
+    echo "  export PW_WS_ENDPOINT=${endpoint}"
+    echo "  const browser = await ${browser}.connect(process.env.PW_WS_ENDPOINT);"
+    ;;
+
+  stop)
+    echo "==> closing ssh tunnel"
+    tunnel_down
+    echo "==> killing tmux window '$win'"
+    kill_cmd="tmux kill-window -t $(sq "${session}:${win}") 2>/dev/null || true"
+    ssh "$host" "$(login_sh "$kill_cmd")"
+    ;;
+
+  status)
+    echo "tunnel:"
+    if [ -f "$tunnel_pidfile" ] && kill -0 "$(cat "$tunnel_pidfile")" 2>/dev/null; then
+      echo "  up (pid $(cat "$tunnel_pidfile")) on localhost:${port}"
+    else
+      echo "  down"
+    fi
+    echo "remote window:"
+    ssh "$host" "$(login_sh "tmux list-windows -t $(sq "$session") 2>/dev/null | grep $(sq "$win") || echo '  (not running)'")"
+    ;;
+
+  endpoint)
+    echo "$endpoint"
+    ;;
+
+  -h|--help|help)
+    sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+
+  *)
+    echo "devbox-playwright: unknown command '${1}' (try: start, stop, status, endpoint, help)" >&2
+    exit 1
+    ;;
+esac
