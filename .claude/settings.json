@@ -4,8 +4,6 @@
       "/tmp"
     ]
   },
-  "skipDangerousModePermissionPrompt": true,
-  "theme": "dark",
   "extraKnownMarketplaces": {
     "ponytail": {
       "source": {
@@ -13,5 +11,12 @@
         "repo": "DietrichGebert/ponytail"
       }
     }
-  }
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"/Users/dseripap/.claude/plugins/marketplaces/ponytail/hooks/ponytail-statusline.sh\""
+  },
+  "effortLevel": "medium"
 }

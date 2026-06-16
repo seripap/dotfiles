@@ -75,6 +75,7 @@
   prompt = true
 [diff]
   tool = nvimdiff
+  external = difft
 [url "git@github.com:"]
   insteadOf = https://github.com/
 [push]
