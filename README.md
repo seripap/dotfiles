@@ -23,6 +23,7 @@ make install  # symlink dotfiles into $HOME
 | `.gitignore` | Global gitignore (referenced by `.gitconfig`) |
 | `coc-settings.json` | coc.nvim language server settings |
 | `.claude/CLAUDE.md` | Claude Code agent profile (preferences, house style, workflow rules) |
+| `.claude/skills/` | Personal Claude skills (e.g. `devbox-browser`); symlinked into `~/.claude/skills` by `make install` |
 | `.ssh/config` | SSH defaults (ControlMaster, keepalive). Real hosts go in `~/.ssh/config.local` (gitignored). Zed remote dev + `devbox` inherit this |
 | `bin/devbox` | Client-side connector — run long-lived commands inside a durable tmux session on your sandbox |
 | `bin/devbox-playwright` | Launch a Playwright browser server on the devbox; drive it from local tests over an ssh-tunneled WebSocket |

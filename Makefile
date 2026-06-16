@@ -34,6 +34,11 @@ install:
 			ln -sfn "$(DOTFILES)/.claude/$$f" "$$HOME/.claude/$$f" && echo "link .claude/$$f"; \
 		fi; \
 	done
+	@if [ -e "$$HOME/.claude/skills" ] && [ ! -L "$$HOME/.claude/skills" ]; then \
+		echo "skip .claude/skills (exists, not a symlink) — move contents into $(DOTFILES)/.claude/skills, then rerun"; \
+	else \
+		ln -sfn "$(DOTFILES)/.claude/skills" "$$HOME/.claude/skills" && echo "link .claude/skills"; \
+	fi
 	@defaults write -g InitialKeyRepeat -int 15 && echo "set InitialKeyRepeat=15 (log out + back in to apply)"
 
 uninstall:
@@ -53,6 +58,9 @@ uninstall:
 			rm "$$HOME/.claude/$$f" && echo "unlink .claude/$$f"; \
 		fi; \
 	done
+	@if [ -L "$$HOME/.claude/skills" ]; then \
+		rm "$$HOME/.claude/skills" && echo "unlink .claude/skills"; \
+	fi
 
 brew:
 	brew bundle --file=Brewfile
