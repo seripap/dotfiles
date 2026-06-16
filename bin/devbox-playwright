@@ -37,14 +37,20 @@ ensure_remote_install() {
   # Idempotent: only installs if package.json is missing, only downloads
   # browser binaries if not already cached by Playwright.
   local script
-  script="set -e
-    mkdir -p ${remote_dir}
-    cd ${remote_dir}
+  script='set -e
+    if ! command -v bun >/dev/null 2>&1; then
+      echo "bun is not installed on this devbox." >&2
+      echo "install it once with:  brew install oven-sh/bun/bun" >&2
+      echo "(or update your Brewfile and rerun:  cd ~/dotfiles && make brew)" >&2
+      exit 127
+    fi
+    mkdir -p '"${remote_dir}"'
+    cd '"${remote_dir}"'
     if [ ! -f package.json ]; then
-      printf '{\"name\":\"devbox-playwright\",\"private\":true,\"type\":\"module\"}\n' > package.json
+      printf '"'"'{"name":"devbox-playwright","private":true,"type":"module"}\n'"'"' > package.json
       bun add playwright
     fi
-    bunx playwright install ${browser}"
+    bunx playwright install '"${browser}"
   ssh "$host" "$(login_sh "$script")"
 }
 
