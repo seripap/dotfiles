@@ -2,6 +2,17 @@
 #  Symlinked from ~/dotfiles/.zshrc by `make install`.
 #  Per-machine secrets/identity go in ~/.extra (gitignored).
 
+# ---------- History ----------
+# Set FIRST, before the `exec script "$SHELL"` recording handoff below. macOS
+# /etc/zshrc ships SAVEHIST=1000; if a shell ever writes history while still
+# carrying that value (e.g. it hands off or bails before reaching the bottom of
+# this file), it truncates ~/.zsh_history. Locking in 50k up here closes that
+# window for every shell, recorded or not.
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=50000
+export SAVEHIST=50000
+setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+
 # ---------- Claude session recording ----------
 # Auto-record interactive sessions via script(1) so `ask` can read previous output.
 # - Set CLAUDE_NO_RECORD=1 to opt out for a specific shell.
@@ -82,12 +93,6 @@ elif [ -x /usr/local/bin/brew ]; then
 fi
 
 export PATH="$HOME/dotfiles/bin:$HOME/bin:$PATH"
-
-# ---------- History ----------
-export HISTFILE="$HOME/.zsh_history"
-export HISTSIZE=50000
-export SAVEHIST=50000
-setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
 
 # ---------- Defaults ----------
 setopt AUTO_CD              # `cd` by typing a directory
