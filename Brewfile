@@ -44,3 +44,4 @@ brew "eksctl"        # eks cli
 brew "awscli"
 brew "aws-vault"     # secure AWS credential storage
 brew "gdal"
+brew "libpq"         # psql / pg_dump client (keg-only — PATH wired in .zshrc), no server

@@ -92,6 +92,11 @@ elif [ -x /usr/local/bin/brew ]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
+# libpq is keg-only, so its psql/pg_dump aren't linked into the prefix bin.
+if [ -n "$HOMEBREW_PREFIX" ] && [ -d "$HOMEBREW_PREFIX/opt/libpq/bin" ]; then
+  export PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$PATH"
+fi
+
 export PATH="$HOME/dotfiles/bin:$HOME/bin:$PATH"
 
 # ---------- Defaults ----------
