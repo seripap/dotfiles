@@ -154,6 +154,7 @@ alias map='xargs -n1'                                                  # `find .
 alias flush='dscacheutil -flushcache && killall -HUP mDNSResponder'    # macOS DNS cache flush
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 alias week='date +%V'                                                  # ISO week number
+alias history='fc -l 1'                                                # show all history, not just the last 16 (bash-like)
 alias serve='python3 -m http.server'
 alias devhelp='~/dotfiles/bin/devbox-banner'                            # re-show devbox cheatsheet + resource snapshot
 
@@ -289,9 +290,23 @@ ask-clean() {
 # stdin too would race script(1)'s own TTY reader and break typing.
 # Pipes and one-shot `claude -p` fall through so `ask` and automation keep working.
 # Interactive session output is NOT recorded to CLAUDE_SESSION_LOG.
+# Resize note: BSD script(1) (macOS) never propagates window-size changes into
+# its PTY, and our output goes to the real tty above — so Claude never gets
+# SIGWINCH and its layout corrupts on resize. A tiny watcher polls the real
+# tty's live size and nudges Claude with SIGWINCH so it re-reads and reflows.
+# Claude itself still runs in the foreground, so Ctrl+C / input are unchanged.
 claude() {
   if [ -n "$CLAUDE_ORIG_TTY" ] && [ -e "$CLAUDE_ORIG_TTY" ] && [ -t 1 ]; then
+    setopt LOCAL_OPTIONS NO_MONITOR NO_NOTIFY   # silence [1]/done job chatter
+    local _fwd=
+    if [ -n "$TTY" ] && command -v python3 >/dev/null 2>&1; then
+      python3 "$HOME/dotfiles/bin/claude-resize-forwarder" "$CLAUDE_ORIG_TTY" "$TTY" &
+      _fwd=$!
+    fi
     command claude "$@" >"$CLAUDE_ORIG_TTY" 2>"$CLAUDE_ORIG_TTY"
+    local rc=$?
+    [ -n "$_fwd" ] && kill "$_fwd" 2>/dev/null
+    return $rc
   else
     command claude "$@"
   fi
@@ -366,3 +381,9 @@ fi
 
 # ---------- Per-machine extras ----------
 [ -f "$HOME/.extra" ] && . "$HOME/.extra"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/dseripap/local/scratch/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/dseripap/local/scratch/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/dseripap/local/scratch/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/dseripap/local/scratch/google-cloud-sdk/completion.zsh.inc'; fi

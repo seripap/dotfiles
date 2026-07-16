@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Reflow the foreground TUI when the terminal is resized.
+
+macOS ships BSD script(1), which -- unlike util-linux script -- does NOT
+propagate window-size changes into the pty it allocates. The session-recording
+wrapper in ~/.zshrc runs the interactive shell under script(1), and the
+claude() wrapper routes Claude Code's output straight to the real Ghostty tty
+(to dodge script's mangling of Ink's cursor sequences). The upshot: on resize,
+Claude never receives SIGWINCH and its layout corrupts with no way to recover.
+
+Claude already reads the real tty's *live* size on fd 1 -- it's just never told
+to look again. This watcher polls the real terminal's size and, when it changes,
+delivers SIGWINCH to the foreground process group of the recording pty (which is
+Claude while it runs). Claude re-queries fd 1 and reflows. Signals and input
+stay on their normal path; we only send a notification.
+
+Usage: claude-resize-forwarder <real_tty> <pty>
+"""
+import fcntl
+import os
+import signal
+import sys
+import termios
+import time
+
+
+def winsize(fd: int) -> bytes:
+    return fcntl.ioctl(fd, termios.TIOCGWINSZ, b"\0" * 8)
+
+
+def main() -> int:
+    if len(sys.argv) != 3:
+        return 2
+    real_tty, pty = sys.argv[1], sys.argv[2]
+    try:
+        # O_NOCTTY: never adopt either tty as our controlling terminal.
+        real_fd = os.open(real_tty, os.O_RDONLY | os.O_NOCTTY)
+        pty_fd = os.open(pty, os.O_RDONLY | os.O_NOCTTY)
+    except OSError:
+        return 1
+
+    last = None
+    while True:
+        try:
+            cur = winsize(real_fd)
+        except OSError:
+            return 0  # real tty went away; nothing left to forward
+        if cur != last:
+            last = cur
+            try:
+                pgrp = os.tcgetpgrp(pty_fd)
+                if pgrp > 0:
+                    os.killpg(pgrp, signal.SIGWINCH)
+            except OSError:
+                pass
+        time.sleep(0.25)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
