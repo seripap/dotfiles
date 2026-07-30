@@ -85,6 +85,17 @@ eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shell
 say "Installing Brewfile dependencies (brew bundle)"
 brew bundle --file="$repo/Brewfile"
 
+# gh extensions aren't Brew-managed, so install them here (gh comes from the
+# Brewfile above). gh-stack drives the stacked-PR workflow.
+# https://github.github.com/gh-stack/
+if gh extension list 2>/dev/null | grep -q 'github/gh-stack'; then
+  say "gh-stack extension already installed"
+else
+  say "Installing gh-stack extension"
+  gh extension install github/gh-stack \
+    || warn "gh extension install failed — auth first with 'gh auth login', then rerun"
+fi
+
 # 4. Symlink the dotfiles into place.
 say "Linking dotfiles (make install)"
 make install
