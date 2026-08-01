@@ -20,6 +20,12 @@ install:
 	done
 	@mkdir -p "$$HOME/.config/coc"
 	@ln -sfn "$(DOTFILES)/coc-settings.json" "$$HOME/.config/coc/coc-settings.json" && echo "link coc-settings.json"
+	@mkdir -p "$$HOME/.config/zed"
+	@if [ -e "$$HOME/.config/zed/settings.json" ] && [ ! -L "$$HOME/.config/zed/settings.json" ]; then \
+		echo "skip zed/settings.json (exists, not a symlink) — move it into $(DOTFILES)/zed/, then rerun"; \
+	else \
+		ln -sfn "$(DOTFILES)/zed/settings.json" "$$HOME/.config/zed/settings.json" && echo "link zed/settings.json"; \
+	fi
 	@mkdir -p "$$HOME/.ssh" && chmod 700 "$$HOME/.ssh"
 	@if [ -e "$$HOME/.ssh/config" ] && [ ! -L "$$HOME/.ssh/config" ]; then \
 		echo "skip .ssh/config (exists, not a symlink) — fold hosts into ~/.ssh/config.local, then rerun"; \
@@ -55,6 +61,9 @@ uninstall:
 	done
 	@if [ -L "$$HOME/.config/coc/coc-settings.json" ]; then \
 		rm "$$HOME/.config/coc/coc-settings.json" && echo "unlink coc-settings.json"; \
+	fi
+	@if [ -L "$$HOME/.config/zed/settings.json" ]; then \
+		rm "$$HOME/.config/zed/settings.json" && echo "unlink zed/settings.json"; \
 	fi
 	@if [ -L "$$HOME/.ssh/config" ]; then \
 		rm "$$HOME/.ssh/config" && echo "unlink .ssh/config"; \

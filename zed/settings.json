@@ -1,0 +1,179 @@
+{
+	"agent": {
+  "inline_assistant_model": {
+   "provider": "zed.dev",
+   "model": "claude-sonnet-4-6",
+   "enable_thinking": false
+  },
+  "default_model": {
+   "provider": "zed.dev",
+   "model": "gpt-5.4",
+   "enable_thinking": true,
+   "effort": "medium"
+  },
+  "favorite_models": [],
+  "model_parameters": []
+ },
+ "edit_predictions": {
+		"provider": "zed",
+	},
+	"tab_size": 2,
+	"git_panel": {
+		"tree_view": true,
+		"dock": "right",
+	},
+	"git": {
+		"worktree_directory": "/Users/dseripap/.worktrees/firststreet/",
+	},
+	"ssh_connections": [
+		{
+			"host": "devbox",
+			"args": [],
+			"projects": [
+				{
+					"paths": ["/Users/dseripap/local/workspace/fs/fs-global"],
+				},
+			],
+			// "port_forwards": [
+			// 	{
+			// 		"local_host": "0.0.0.0",
+			// 		"local_port": 9000,
+			// 		"remote_port": 3000,
+			// 	},
+			// 	{
+			// 		"local_host": "0.0.0.0",
+			// 		"local_port": 9001,
+			// 		"remote_port": 3001,
+			// 	},
+			// ],
+		},
+	],
+	"code_lens": "on",
+	"cli_default_open_behavior": "new_window",
+	"icon_theme": "Catppuccin Mocha",
+	"agent_servers": {
+		"github-copilot-cli": {
+			"type": "registry",
+		},
+		"codex-acp": {
+			"type": "registry",
+		},
+		"claude-acp": {
+			"favorite_config_option_values": {
+    "effort": [
+     "medium"
+    ]
+   },
+   "type": "registry",
+			"default_config_options": {
+				"model": "default",
+    "effort": "medium",
+    "mode": "bypassPermissions",
+			},
+		},
+	},
+	"hard_tabs": true,
+	"session": {
+		"trust_all_worktrees": true,
+	},
+	"tabs": {
+		"show_diagnostics": "errors",
+	},
+	"indent_guides": {
+		"coloring": "indent_aware",
+	},
+	"calls": {
+		"mute_on_join": true,
+	},
+	"vim_mode": true,
+	"base_keymap": "SublimeText",
+	"ui_font_size": 16,
+	"buffer_font_size": 15,
+	"theme": {
+		"mode": "system",
+		"light": "One Light",
+		"dark": "One Dark",
+	},
+	"languages": {
+		// Refer https://zed.dev/docs/languages/javascript and https://zed.dev/docs/languages/typescript for more info
+		"TypeScript": {
+			// Refer https://github.com/jellydn/ts-inlay-hints for how to setup for Neovim and VSCode
+			"inlay_hints": {
+				"enabled": true,
+				"show_parameter_hints": false,
+				"show_other_hints": true,
+				"show_type_hints": false,
+			},
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"JavaScript": {
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"TSX": {
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"JSON": {
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"JSONC": {
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"CSS": {
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"GraphQL": {
+			"tab_size": 2,
+			"hard_tabs": false,
+			"formatter": [
+				{
+					"language_server": { "name": "biome" },
+				},
+				{ "code_action": "source.organizeImports.biome" },
+				{ "code_action": "source.fixAll.biome" },
+			],
+		},
+		"Python": {
+			"formatter": { "language_server": { "name": "ruff" } },
+			"language_servers": ["pyright", "ruff"],
+		},
+	},
+	"minimap": {
+		"show": "auto",
+	},
+}
