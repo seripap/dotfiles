@@ -5,7 +5,7 @@ HOME_FILES := .zshrc .vimrc .gitconfig .gitignore
 
 help:
 	@echo "Available targets:"
-	@echo "  install    Symlink dotfiles into \$$HOME"
+	@echo "  install    Symlink dotfiles into \$$HOME, then brew bundle (packages + apps)"
 	@echo "  uninstall  Remove dotfile symlinks from \$$HOME"
 	@echo "  brew       Install dependencies from Brewfile"
 	@echo "  test       Lint shell files with shellcheck"
@@ -40,6 +40,12 @@ install:
 		ln -sfn "$(DOTFILES)/.claude/skills" "$$HOME/.claude/skills" && echo "link .claude/skills"; \
 	fi
 	@defaults write -g InitialKeyRepeat -int 15 && echo "set InitialKeyRepeat=15 (log out + back in to apply)"
+	@if command -v brew >/dev/null 2>&1; then \
+		echo "brew bundle (check + install packages and apps)"; \
+		brew bundle --file="$(DOTFILES)/Brewfile"; \
+	else \
+		echo "skip brew bundle (Homebrew not installed — see https://brew.sh)"; \
+	fi
 
 uninstall:
 	@for f in $(HOME_FILES); do \
